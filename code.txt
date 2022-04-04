@@ -1,0 +1,306 @@
+# #####################################################################################################################
+# This program is for digital holographic microscope
+# Main Idea:
+#            Auto-Focusing with Angular Spectrum (Fourier sharpness);
+#            Auto-Fourier Filtering;
+#            Phase unwrapping
+#
+# Camera Info: FLIR BFS-U3-120S4M-CS, Pixel size: 1.85um, (4000 x 3000)
+#
+# Date: 2022-Jan-12
+# #####################################################################################################################
+
+# Package import
+import numpy as np
+from tkinter.filedialog import askdirectory
+import tifffile as tf
+from tqdm import tqdm
+from unwrap import unwrap
+import matplotlib.pyplot as plt
+import math
+import pandas as pd
+import openpyxl
+
+# #####################################################################################################################
+# Global Variables
+# #####################################################################################################################
+
+# customized parameter
+expansion = 100  # For apodization function
+
+# Data Reading
+num_data = 1  # Number of images
+background_file_name = 'ref'
+hologram_file_name = '1'
+
+# System Parameter
+pixel_x = pixel_y = 1.85  # micro-meter (unit)
+diffraction_index = 1.33
+magnification = 20
+wavelength = 0.635  # 635nm
+
+# Reconstruction parameter
+rec_scale = 40
+rec_pos = rec_scale / (-2)
+V = 5  # rec_step = rec_scale/V
+
+k = 2 * diffraction_index * math.pi / wavelength
+delta = pixel_x / magnification
+j = complex(0, 1)  # set default complex number
+
+path_name = askdirectory()  # ask directory and find the file in question
+
+
+#######################################################################################################################
+#  Function Definitions
+#######################################################################################################################
+
+
+def image_read_local():
+    hologram_raw = plt.imread(str(path_name + '/Data/' + hologram_file_name + '.tiff'))  # read the file
+    hologram_raw = np.array(hologram_raw[:, :], dtype=float)  # reads first channel
+    background_read = plt.imread(str(path_name + '/Data/' + background_file_name + '.tiff'))
+    background_read = np.array(background_read[:, :], dtype=float)
+
+    # mean = np.mean(hologram_raw)
+    # std = np.std(hologram_raw)
+    # hologram_raw = (hologram_raw - mean) / std
+    # background_read = (background_read - mean) / std
+
+    return hologram_raw, background_read
+
+
+def ROI_Setting(img1=None, img2=None):
+    plt.imshow(img1, cmap='gray')  # 8-bit grey scale
+    roi_x, roi_y = plt.ginput(2)
+
+    top = int(roi_x[0])
+    bot = int(roi_y[0])
+    left = int(roi_x[1])
+    right = int(roi_y[1])
+
+    if (top - bot) % 2 != 0:
+        bot = bot - 1
+    if (left - right) % 2 != 0:
+        right = right - 1
+
+    img1 = img1[left: right, top: bot]
+    img2 = img2[left: right, top: bot]
+    plt.imshow(img1, cmap='gray')
+    plt.ginput(1)
+    return img1, img2, top, bot, left, right
+
+
+def ROI_apply(img1, img2, top, bot, left, right):
+    img1 = img1[left: right, top: bot]
+    img2 = img2[left: right, top: bot]
+    return img1, img2
+
+
+def Hanning_filter(m_x, n_y, c_x, c_y, r):
+    r = int(r * 1.5)
+
+    hann = np.sqrt(np.outer(np.hanning(r * 2), np.hanning(r * 2)))
+    hann = np.pad(hann, ((int(c_x - r), int(m_x - c_x - r)), (int(c_y - r), int(n_y - c_y - r))), 'constant')
+
+    return hann
+
+
+def Flat_window(l_end, l_begin, a, b, k_fac):
+    line = np.linspace(1, l_end, l_end)
+
+    interval0 = [1 if (i < (int(l_end - l_begin) / 2)) else 0 for i in line]
+    interval1 = [1 if ((((l_end - l_begin) / 2) <= i) and (i <= int(l_end + l_begin) / 2)) else 0 for i in line]
+    interval2 = [1 if (i > ((l_end + l_begin) / 2)) else 0 for i in line]
+    w1 = np.power(np.cos(a * ((2 * line) / int(l_end - l_begin) - 1)), k_fac) * interval0
+    w1[np.isnan(w1)] = 0
+    w2 = interval1
+    w3 = np.power(np.cos(b * ((2 * line) / (l_end + l_begin + 2) - 1)), k_fac) * interval2
+    w3[np.isnan(w3)] = 0
+
+    w = w1 + w2 + w3
+    return w
+
+
+def Apodization_process(img, k_factor=1.5):
+    l0x, l0y = img.shape
+    l0x = l0x - (expansion * 3)
+    l0y = l0y - (expansion * 3)
+
+    holo = np.pad(img, pad_width=expansion, mode='edge')
+    lx, ly = holo.shape
+
+    ax = - (np.pi / 2) * (lx - l0x) / (l0x - lx + 2)
+    bx = (np.pi / 2) * (lx + l0x + 2) / (lx - l0x - 2)
+    ay = - (np.pi / 2) * (ly - l0y) / (l0y - ly + 2)
+    by = (np.pi / 2) * (ly + l0y + 2) / (ly - l0y - 2)
+
+    wx = Flat_window(lx, l0x, ax, bx, k_factor)
+    wy = Flat_window(ly, l0y, ay, by, k_factor)
+
+    x, y = np.meshgrid(wy, wx)
+
+    window = x * y
+
+    img_processed = holo * window
+
+    # tf.imshow(window, title="window", cmap='gray')
+    # plt.ginput(1)
+
+    # tf.imshow(np.real(holo * np.conjugate(holo)), title="holo", cmap='gray')
+    # plt.ginput(1)
+
+    # tf.imshow(np.real(img_processed * np.conjugate(img_processed)), title="img", cmap='gray')
+    # plt.ginput(1)
+
+    return img_processed
+
+
+def filter_create(hologram_raw):
+    frequency = np.fft.fftshift(np.fft.fft2(hologram_raw))
+    m_x, n_y = np.shape(frequency)
+    first_quadrant = frequency[1: int(math.floor(m_x / 2) - 30), int(math.floor(n_y / 2) + 30):n_y - 30]
+    indices = np.where(first_quadrant == np.amax(first_quadrant))
+    # If Second Quadrant
+    # Second_quadrant = frequency[1: int(math.floor(m_x / 2) - 10), 1: int(math.floor(n_y / 2) - 10)]
+    # indices = np.where(Second_quadrant == np.max(Second_quadrant))
+    center_x = indices[0]
+    center_y = indices[1]
+    center_y = center_y + int(math.floor(n_y / 2) + 30)
+
+    # tf.imshow(np.log(1 + abs(frequency)), title="Select A Filter", cmap='gray')
+    # manual_point = plt.ginput()[0]
+    # manual_y, manual_x = manual_point
+    # radius = np.sqrt(np.power(center_y - int(manual_y), 2) + np.power(center_x - int(manual_x), 2))
+    # radius = int(radius)
+
+    distance = np.sqrt(np.power(np.abs(center_x - int(m_x / 2)), 2) + np.power(np.abs(int(n_y / 2) - center_y), 2))
+    radius = (distance / 3) * 1.2
+
+    filter_hann = Hanning_filter(m_x, n_y, center_x, center_y, radius)
+
+    mesh_m, mesh_n = np.meshgrid(np.arange(0, n_y), np.arange(0, m_x))
+    region = np.sqrt((mesh_n - float(center_x)) ** 2 + (mesh_m - float(center_y)) ** 2)
+    circle_window = np.array(region <= radius)
+
+    circle_window = circle_window * filter_hann
+
+    plt.imshow(circle_window, cmap='Greys')
+    plt.ginput(1)
+    return circle_window
+
+
+def fourier_process(img_pre, filter_pre):
+    fourier_pre = np.fft.fft2(img_pre)
+    fourier_selected = np.fft.ifftshift(np.fft.fftshift(fourier_pre) * filter_pre)
+    fourier_selected = np.fft.ifft2(fourier_selected)
+    return fourier_selected
+
+
+def Sharpness_test(img):
+    fourier = np.fft.fftshift(np.fft.fft2(np.abs(img)))
+    sharp = np.sum(np.log(1 + abs(fourier)))
+    return sharp
+
+
+def Angular_spectrum(img_res, n_x, kz, mask, term, scale, pos, vol):
+    image_stack = np.zeros((m, n_x, vol))
+    image_phase = np.zeros((m, n_x, vol))
+    sharpness_res = []
+
+    bar_first = tqdm(range(1, vol))
+    for z in bar_first:
+        bar_first.set_description("Processing_Angular " + str(term) + ":" + str(int(z + 1)))
+        df = pos + z * scale / vol
+
+        c = np.where(mask, img_res * np.exp(1j * kz * df), 0)
+        e = np.fft.ifft2(np.fft.ifftshift(c))
+        e = e[expansion: expansion + m, expansion: expansion + n_x]
+
+        reconstructed = np.real(e * np.conjugate(e))
+        image_stack[:, :, z] = reconstructed
+        sharp_value_intensity = Sharpness_test(reconstructed)
+        sharpness_res.append(sharp_value_intensity)
+
+        reconstructed_phase = np.arctan2(np.imag(e), np.real(e))
+        image_phase[:, :, z] = reconstructed_phase
+
+    image_stack = np.delete(image_stack, [0], axis=2)
+    image_phase = np.delete(image_phase, [0], axis=2)
+
+    return image_stack, sharpness_res, image_phase
+
+
+def Reconstruction_Angular(image):
+    a = np.fft.fftshift(np.fft.fft2(image))
+    n_x, m_y = a.shape
+    extent_x = m_y * delta
+    extent_y = n_x * delta
+    kx = np.linspace(-np.pi * m_y // 2 / (extent_x / 2), np.pi * m_y // 2 / (extent_x / 2), m_y)
+    ky = np.linspace(-np.pi * n_x // 2 / (extent_y / 2), np.pi * n_x // 2 / (extent_y / 2), n_x)
+
+    kx, ky = np.meshgrid(kx, ky)
+
+    kz = np.sqrt(k ** 2 - kx ** 2 - ky ** 2)
+    mask = (k ** 2 - kx ** 2 - ky ** 2) > 0
+
+    image_stack, img_sharpness, image_phase_stack = Angular_spectrum(a, n_x, kz, mask, 1, rec_scale, rec_pos, V)
+
+    index_max = np.where(img_sharpness == np.max(img_sharpness))
+    index_scale = rec_scale * 2 / V
+    index_pos = np.subtract(index_max, index_scale / 2)
+    image_stack_second, sharpness_second, image_phase_stack = Angular_spectrum(a, n_x, kz, mask, 2, index_scale,
+                                                                               index_pos, V)
+    index_img_max = np.argmax(sharpness_second)
+    phase_result = image_phase_stack[:, :, index_img_max]
+    phase_result = np.squeeze(phase_result)
+
+    return image_stack_second, sharpness_second, phase_result
+
+
+#######################################################################################################################
+# Main Function In-Line
+#######################################################################################################################
+if __name__ == '__main__':
+
+    hologram, background = image_read_local()
+    hologram, background, TOP, BOT, LEFT, RIGHT = ROI_Setting(img1=hologram, img2=background)
+
+    circle_filter = filter_create(hologram)
+    Back_filtered = fourier_process(background, circle_filter)
+    Back_filtered = np.exp(j * np.angle(np.conj(Back_filtered)))
+
+    m, n = hologram.shape
+
+    for data in range(num_data):
+        hologram_file_name = str(data + 1)
+        print('processing >>>>> ' + str(hologram_file_name))
+        hologram, background = image_read_local()
+        hologram, background = ROI_apply(img1=hologram, img2=background, top=TOP, bot=BOT, left=LEFT, right=RIGHT)
+
+        hologram_filtered = fourier_process(hologram, circle_filter)
+
+        holo_cleared = Back_filtered * hologram_filtered
+
+        holo_processed = Apodization_process(holo_cleared)
+        print('reconstructing...>>>>>')
+        Reconstructed_images_3, sharpness, phase_reconstructed = Reconstruction_Angular(holo_processed)
+
+        volume = (65535 * Reconstructed_images_3 / (np.max(Reconstructed_images_3) + 1)).astype(np.uint16)
+        tf.imsave(str(path_name + '/Result/' + 'result_Angular_Hann_Intensity' + '.tiff'),
+                  np.moveaxis(volume.astype(np.uint16), -1, 0))
+
+        sharpness_in = (sharpness - np.mean(sharpness)) / np.std(sharpness)
+        sharpness_data = pd.DataFrame({"Sharpness_intensity": sharpness_in, "sharpness_intensity": sharpness})
+        sharpness_data.to_excel(str(path_name + '/Result/' + 'Sharpness' + '.xls'), engine='openpyxl')
+
+        unwrapped_phase = unwrap(phase_reconstructed,
+                                 wrap_around_axis_0=False,
+                                 wrap_around_axis_1=False,
+                                 wrap_around_axis_2=False)
+        height = unwrapped_phase * wavelength / (2 * diffraction_index * math.pi)
+
+        tf.imsave(str(path_name + '/Result/Height/' + 'result_Height_'
+                      + hologram_file_name + '.tiff'), height)
+        tf.imsave(str(path_name + '/Result/Phase/' + 'result_Height_phase_'
+                      + hologram_file_name + '.tiff'), phase_reconstructed)
