@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>534</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,19 +17,25 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>280</x>
       <y>10</y>
-      <width>481</width>
+      <width>511</width>
       <height>491</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>511</width>
+      <height>491</height>
+     </size>
     </property>
    </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>440</y>
-      <width>221</width>
+      <x>380</x>
+      <y>510</y>
+      <width>351</width>
       <height>23</height>
      </rect>
     </property>
@@ -308,10 +314,10 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>231</width>
-      <height>181</height>
+      <x>10</x>
+      <y>180</y>
+      <width>251</width>
+      <height>211</height>
      </rect>
     </property>
     <property name="font">
@@ -443,12 +449,50 @@
       </item>
      </layout>
     </widget>
+    <widget class="QWidget" name="formLayoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="fourierFilterLabel">
+        <property name="text">
+         <string>Fourier Filter:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="fourierFilterComboBox">
+        <item>
+         <property name="text">
+          <string>Flat</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Hann</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Hann with Apodization</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>380</y>
+      <x>20</x>
+      <y>450</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -468,8 +512,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>380</y>
+      <x>140</x>
+      <y>450</y>
       <width>111</width>
       <height>31</height>
      </rect>
