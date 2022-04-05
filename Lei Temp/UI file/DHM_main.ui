@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>30</y>
       <width>231</width>
       <height>171</height>
      </rect>
@@ -315,9 +315,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>220</y>
       <width>251</width>
-      <height>211</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="font">
@@ -331,7 +331,7 @@
     <widget class="QCheckBox" name="checkBox">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>10</y>
        <width>111</width>
        <height>16</height>
@@ -347,7 +347,7 @@
     <widget class="QCheckBox" name="checkBox_2">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>30</y>
        <width>111</width>
        <height>16</height>
@@ -360,18 +360,36 @@
     <widget class="QWidget" name="formLayoutWidget_3">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>20</x>
        <y>50</y>
-       <width>219</width>
-       <height>121</height>
+       <width>231</width>
+       <height>127</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+      </property>
       <property name="formAlignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+      </property>
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>2</number>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="adress_Label">
@@ -453,19 +471,12 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>180</y>
+       <y>190</y>
        <width>251</width>
-       <height>21</height>
+       <height>41</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="fourierFilterLabel">
-        <property name="text">
-         <string>Fourier Filter:</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="fourierFilterComboBox">
         <item>
@@ -485,6 +496,13 @@
         </item>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="fourierFilterLabel">
+        <property name="text">
+         <string>Fourier Filter:</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </widget>
@@ -492,7 +510,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>450</y>
+      <y>480</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -513,7 +531,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>450</y>
+      <y>480</y>
       <width>111</width>
       <height>31</height>
      </rect>
