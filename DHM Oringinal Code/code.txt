@@ -15,10 +15,11 @@ import numpy as np
 from tkinter.filedialog import askdirectory
 import tifffile as tf
 from tqdm import tqdm
-from unwrap import unwrap
 import matplotlib.pyplot as plt
 import math
 import pandas as pd
+from skimage.filters import gaussian
+from skimage.restoration import unwrap_phase  # intall 'Microsoft's vcredist_x64.exe' if it not work
 import openpyxl
 
 # #####################################################################################################################
@@ -27,6 +28,7 @@ import openpyxl
 
 # customized parameter
 expansion = 100  # For apodization function
+shar = []  # Sharpness test
 
 # Data Reading
 num_data = 1  # Number of images
@@ -35,16 +37,17 @@ hologram_file_name = '1'
 
 # System Parameter
 pixel_x = pixel_y = 1.85  # micro-meter (unit)
-diffraction_index = 1.33
-magnification = 20
-wavelength = 0.635  # 635nm
+diffraction_index = 1.52
+magnification = 40
+wavelength = 0.640  # 640nm
 
 # Reconstruction parameter
-rec_scale = 40
+rec_scale = 10
 rec_pos = rec_scale / (-2)
-V = 5  # rec_step = rec_scale/V
+# rec_pos = 8
+V = 2  # rec_step = rec_scale/V
 
-k = 2 * diffraction_index * math.pi / wavelength
+vector = 2 * diffraction_index * math.pi / wavelength
 delta = pixel_x / magnification
 j = complex(0, 1)  # set default complex number
 
@@ -61,16 +64,10 @@ def image_read_local():
     hologram_raw = np.array(hologram_raw[:, :], dtype=float)  # reads first channel
     background_read = plt.imread(str(path_name + '/Data/' + background_file_name + '.tiff'))
     background_read = np.array(background_read[:, :], dtype=float)
-
-    # mean = np.mean(hologram_raw)
-    # std = np.std(hologram_raw)
-    # hologram_raw = (hologram_raw - mean) / std
-    # background_read = (background_read - mean) / std
-
     return hologram_raw, background_read
 
 
-def ROI_Setting(img1=None, img2=None):
+def roi_setting(img1=None, img2=None):
     plt.imshow(img1, cmap='gray')  # 8-bit grey scale
     roi_x, roi_y = plt.ginput(2)
 
@@ -91,14 +88,14 @@ def ROI_Setting(img1=None, img2=None):
     return img1, img2, top, bot, left, right
 
 
-def ROI_apply(img1, img2, top, bot, left, right):
+def roi_apply(img1, img2, top, bot, left, right):
     img1 = img1[left: right, top: bot]
     img2 = img2[left: right, top: bot]
     return img1, img2
 
 
-def Hanning_filter(m_x, n_y, c_x, c_y, r):
-    r = int(r * 1.5)
+def hanning_filter(m_x, n_y, c_x, c_y, r):
+    r = int(r * 1.3)
 
     hann = np.sqrt(np.outer(np.hanning(r * 2), np.hanning(r * 2)))
     hann = np.pad(hann, ((int(c_x - r), int(m_x - c_x - r)), (int(c_y - r), int(n_y - c_y - r))), 'constant')
@@ -106,7 +103,7 @@ def Hanning_filter(m_x, n_y, c_x, c_y, r):
     return hann
 
 
-def Flat_window(l_end, l_begin, a, b, k_fac):
+def flat_window(l_end, l_begin, a, b, k_fac):
     line = np.linspace(1, l_end, l_end)
 
     interval0 = [1 if (i < (int(l_end - l_begin) / 2)) else 0 for i in line]
@@ -122,7 +119,7 @@ def Flat_window(l_end, l_begin, a, b, k_fac):
     return w
 
 
-def Apodization_process(img, k_factor=1.5):
+def apodization_process(img, k_factor=1.5):
     l0x, l0y = img.shape
     l0x = l0x - (expansion * 3)
     l0y = l0y - (expansion * 3)
@@ -135,8 +132,8 @@ def Apodization_process(img, k_factor=1.5):
     ay = - (np.pi / 2) * (ly - l0y) / (l0y - ly + 2)
     by = (np.pi / 2) * (ly + l0y + 2) / (ly - l0y - 2)
 
-    wx = Flat_window(lx, l0x, ax, bx, k_factor)
-    wy = Flat_window(ly, l0y, ay, by, k_factor)
+    wx = flat_window(lx, l0x, ax, bx, k_factor)
+    wy = flat_window(ly, l0y, ay, by, k_factor)
 
     x, y = np.meshgrid(wy, wx)
 
@@ -159,16 +156,26 @@ def Apodization_process(img, k_factor=1.5):
 def filter_create(hologram_raw):
     frequency = np.fft.fftshift(np.fft.fft2(hologram_raw))
     m_x, n_y = np.shape(frequency)
-    first_quadrant = frequency[1: int(math.floor(m_x / 2) - 30), int(math.floor(n_y / 2) + 30):n_y - 30]
-    indices = np.where(first_quadrant == np.amax(first_quadrant))
+
+    # If First Quadrant
+    # first_quadrant = frequency[1: int(math.floor(m_x / 2) - 30), int(math.floor(n_y / 2) + 30):n_y - 30]
+    # indices = np.where(first_quadrant == np.amax(first_quadrant))
     # If Second Quadrant
-    # Second_quadrant = frequency[1: int(math.floor(m_x / 2) - 10), 1: int(math.floor(n_y / 2) - 10)]
-    # indices = np.where(Second_quadrant == np.max(Second_quadrant))
+    # second_quadrant = frequency[1: int(math.floor(m_x / 2) - 10), 1: int(math.floor(n_y / 2) - 10)]
+    # indices = np.where(second_quadrant == np.max(second_quadrant))
+
+    # If Third Quadrant
+    third_quadrant = frequency[int(math.floor(m_x / 2) + 30): m_x - 30, 1:int(math.floor(n_y / 2) - 30)]
+    indices = np.where(third_quadrant == np.amax(third_quadrant))
+
     center_x = indices[0]
+    center_x = center_x + int(math.floor(m_x / 2) + 30)  # Third Quadrant
     center_y = indices[1]
-    center_y = center_y + int(math.floor(n_y / 2) + 30)
+    # center_y = center_y + int(math.floor(n_y / 2) + 30) # Second Quadrant
 
     # tf.imshow(np.log(1 + abs(frequency)), title="Select A Filter", cmap='gray')
+
+    # if manual
     # manual_point = plt.ginput()[0]
     # manual_y, manual_x = manual_point
     # radius = np.sqrt(np.power(center_y - int(manual_y), 2) + np.power(center_x - int(manual_x), 2))
@@ -177,7 +184,8 @@ def filter_create(hologram_raw):
     distance = np.sqrt(np.power(np.abs(center_x - int(m_x / 2)), 2) + np.power(np.abs(int(n_y / 2) - center_y), 2))
     radius = (distance / 3) * 1.2
 
-    filter_hann = Hanning_filter(m_x, n_y, center_x, center_y, radius)
+    print(center_x, center_y, radius)
+    filter_hann = hanning_filter(m_x, n_y, center_x, center_y, radius)
 
     mesh_m, mesh_n = np.meshgrid(np.arange(0, n_y), np.arange(0, m_x))
     region = np.sqrt((mesh_n - float(center_x)) ** 2 + (mesh_m - float(center_y)) ** 2)
@@ -197,41 +205,56 @@ def fourier_process(img_pre, filter_pre):
     return fourier_selected
 
 
-def Sharpness_test(img):
-    fourier = np.fft.fftshift(np.fft.fft2(np.abs(img)))
+def sharpness_test(img):
+    img = background_unit(img)
+    img_gaussian = gaussian(img, sigma=2)
+    fourier = np.fft.fftshift(np.fft.fft2(np.abs(img_gaussian)))
     sharp = np.sum(np.log(1 + abs(fourier)))
+    # n_img, m_img = img.shape
+
+    # sharp = np.sum(np.square(np.absolute(img) - np.mean(img_gaussian))) / (n_img * m_img)
+    # sharp = cv2.Laplacian(img_gaussian, cv2.CV_64F).var()
+    shar.append(img_gaussian)
     return sharp
 
 
-def Angular_spectrum(img_res, n_x, kz, mask, term, scale, pos, vol):
-    image_stack = np.zeros((m, n_x, vol))
-    image_phase = np.zeros((m, n_x, vol))
+def angular_spectrum(img_res, n_x, m_y, kz, mask, term, scale, pos, vol):
+    image_phase = []
+    intensity = []
     sharpness_res = []
+    diffraction_dis = []
+    gaussian_img = []
 
     bar_first = tqdm(range(1, vol))
+
     for z in bar_first:
         bar_first.set_description("Processing_Angular " + str(term) + ":" + str(int(z + 1)))
         df = pos + z * scale / vol
-
+        df = 0
         c = np.where(mask, img_res * np.exp(1j * kz * df), 0)
         e = np.fft.ifft2(np.fft.ifftshift(c))
-        e = e[expansion: expansion + m, expansion: expansion + n_x]
+        e = e[expansion: expansion + m, expansion: expansion + n]
 
-        reconstructed = np.real(e * np.conjugate(e))
-        image_stack[:, :, z] = reconstructed
-        sharp_value_intensity = Sharpness_test(reconstructed)
+        reconstructed_in = np.real(e * np.conjugate(e))
+        # sharp_value_intensity = cv2.Laplacian(reconstructed_in, cv2.CV_64F).var()
+        sharp_value_intensity = sharpness_test(reconstructed_in)
+
+        intensity.append(reconstructed_in)
         sharpness_res.append(sharp_value_intensity)
+        diffraction_dis.append(df)
 
-        reconstructed_phase = np.arctan2(np.imag(e), np.real(e))
-        image_phase[:, :, z] = reconstructed_phase
+        reconstructed_phase = np.angle(e)
+        image_phase.append(reconstructed_phase)
 
-    image_stack = np.delete(image_stack, [0], axis=2)
-    image_phase = np.delete(image_phase, [0], axis=2)
+    sharpness_data = pd.DataFrame({"Sharpness_intensity": sharpness_res, "diffraction distance": diffraction_dis})
+    sharpness_data.to_excel(str(path_name + '/Result/' + 'Sharpness' + str(term) + '.xls'), engine='openpyxl')
+    intensity = np.squeeze(intensity)
+    # print('intensity shape ' + str(np.shape(intensity)))
 
-    return image_stack, sharpness_res, image_phase
+    return sharpness_res, diffraction_dis, image_phase, intensity
 
 
-def Reconstruction_Angular(image):
+def angular_mask(image):
     a = np.fft.fftshift(np.fft.fft2(image))
     n_x, m_y = a.shape
     extent_x = m_y * delta
@@ -241,21 +264,46 @@ def Reconstruction_Angular(image):
 
     kx, ky = np.meshgrid(kx, ky)
 
-    kz = np.sqrt(k ** 2 - kx ** 2 - ky ** 2)
-    mask = (k ** 2 - kx ** 2 - ky ** 2) > 0
+    kz = np.sqrt(vector ** 2 - kx ** 2 - ky ** 2)
+    mask = (vector ** 2 - kx ** 2 - ky ** 2) > 0
+    return a, kz, mask, n_x, m_y
 
-    image_stack, img_sharpness, image_phase_stack = Angular_spectrum(a, n_x, kz, mask, 1, rec_scale, rec_pos, V)
 
-    index_max = np.where(img_sharpness == np.max(img_sharpness))
-    index_scale = rec_scale * 2 / V
-    index_pos = np.subtract(index_max, index_scale / 2)
-    image_stack_second, sharpness_second, image_phase_stack = Angular_spectrum(a, n_x, kz, mask, 2, index_scale,
-                                                                               index_pos, V)
-    index_img_max = np.argmax(sharpness_second)
-    phase_result = image_phase_stack[:, :, index_img_max]
-    phase_result = np.squeeze(phase_result)
+def reconstruction_angular(image):
+    fft_img, kz, mask, n_x, m_y = angular_mask(image)
 
-    return image_stack_second, sharpness_second, phase_result
+    # img_sharpness, diffraction_dis, image_phase_stack, intensity_1 = Angular_spectrum(fft_img, n_x, m_y, kz, mask, 1,
+    # rec_scale, rec_pos, V)
+    # index_max = np.argmax(img_sharpness)
+    # index_max = diffraction_dis[index_max]
+    # index_scale = rec_scale * 2.2 / V
+    # index_pos = np.subtract(index_max, index_scale / 2)
+
+    sharpness_second, diffraction_dis_2, image_phase_stack, intensity_2 = angular_spectrum(fft_img, n_x, m_y, kz, mask,
+                                                                                           2, rec_scale, rec_pos, V)
+
+    index_img_min = np.argmin(sharpness_second)
+    distance = diffraction_dis_2[index_img_min]
+
+    phase_result = image_phase_stack[index_img_min]
+    print(index_img_min)
+    # phase_result = np.squeeze(phase_result)
+
+    intensity_result = intensity_2[index_img_min]
+
+    return phase_result, distance, intensity_result, intensity_2
+
+
+def background_unit(img):
+    histogram, bin_edges = np.histogram(img, bins=256)
+    max_histogram = bin_edges[np.argmax(histogram)]
+    image_back = img - max_histogram
+    # histogram = np.append(histogram, 0)
+    # print(np.shape(img))
+    # print(max)
+    # histogram_data = pd.DataFrame({"histogram": histogram, "bin_edges": bin_edges})
+    # histogram_data.to_excel(str(path_name + '/Result/' + 'histogram' + '.xls'), engine='openpyxl')
+    return image_back
 
 
 #######################################################################################################################
@@ -264,7 +312,7 @@ def Reconstruction_Angular(image):
 if __name__ == '__main__':
 
     hologram, background = image_read_local()
-    hologram, background, TOP, BOT, LEFT, RIGHT = ROI_Setting(img1=hologram, img2=background)
+    hologram, background, TOP, BOT, LEFT, RIGHT = roi_setting(img1=hologram, img2=background)
 
     circle_filter = filter_create(hologram)
     Back_filtered = fourier_process(background, circle_filter)
@@ -276,31 +324,35 @@ if __name__ == '__main__':
         hologram_file_name = str(data + 1)
         print('processing >>>>> ' + str(hologram_file_name))
         hologram, background = image_read_local()
-        hologram, background = ROI_apply(img1=hologram, img2=background, top=TOP, bot=BOT, left=LEFT, right=RIGHT)
+        hologram, background = roi_apply(img1=hologram, img2=background, top=TOP, bot=BOT, left=LEFT, right=RIGHT)
 
         hologram_filtered = fourier_process(hologram, circle_filter)
 
         holo_cleared = Back_filtered * hologram_filtered
 
-        holo_processed = Apodization_process(holo_cleared)
-        print('reconstructing...>>>>>')
-        Reconstructed_images_3, sharpness, phase_reconstructed = Reconstruction_Angular(holo_processed)
+        holo_processed = apodization_process(holo_cleared)
 
-        volume = (65535 * Reconstructed_images_3 / (np.max(Reconstructed_images_3) + 1)).astype(np.uint16)
-        tf.imsave(str(path_name + '/Result/' + 'result_Angular_Hann_Intensity' + '.tiff'),
-                  np.moveaxis(volume.astype(np.uint16), -1, 0))
+        phase_reconstructed, diffraction_distance, reconstructed, intensity_final = reconstruction_angular(
+            holo_processed)
+        print('Focus plane of image  ' + str(hologram_file_name) + '  is >>>>>' + str(diffraction_distance) + 'um')
+        # volume = (65535 * Reconstructed_images_3 / (np.max(Reconstructed_images_3) + 1)).astype(np.uint16)
+        # tf.imsave(str(path_name + '/Result/' + 'result_Angular_Hann_Intensity' + '.tiff'),
+        # np.moveaxis(volume.astype(np.uint16), -1, 0))
+        tf.imwrite(str(path_name + '/Result/' + 'result_Angular_Hann_Intensity_' + str(data) + '.tiff'), reconstructed)
+        tf.imwrite(str(path_name + '/Result/' + 'result_Angular_Hann_Intensity_22' + str(data) + '.tiff'),
+                   intensity_final)
+        phase_reconstructed = 0 - phase_reconstructed
+        # unwrapped_phase = unwrap(phase_reconstructed,
+        # wrap_around_axis_0=False,
+        # wrap_around_axis_1=False,
+        # wrap_around_axis_2=False)
+        unwrapped_phase = unwrap_phase(phase_reconstructed)
+        height = unwrapped_phase * 3 / vector
+        height = background_unit(height)
+        tf.imwrite(str(path_name + '/Result/Height/' + 'result_Height_angle_'
+                       + hologram_file_name + '.tiff'), height)
+        tf.imwrite(str(path_name + '/Result/' + 'result_Height_phase_angle'
+                       + hologram_file_name + '.tiff'), phase_reconstructed)
 
-        sharpness_in = (sharpness - np.mean(sharpness)) / np.std(sharpness)
-        sharpness_data = pd.DataFrame({"Sharpness_intensity": sharpness_in, "sharpness_intensity": sharpness})
-        sharpness_data.to_excel(str(path_name + '/Result/' + 'Sharpness' + '.xls'), engine='openpyxl')
-
-        unwrapped_phase = unwrap(phase_reconstructed,
-                                 wrap_around_axis_0=False,
-                                 wrap_around_axis_1=False,
-                                 wrap_around_axis_2=False)
-        height = unwrapped_phase * wavelength / (2 * diffraction_index * math.pi)
-
-        tf.imsave(str(path_name + '/Result/Height/' + 'result_Height_'
-                      + hologram_file_name + '.tiff'), height)
-        tf.imsave(str(path_name + '/Result/Phase/' + 'result_Height_phase_'
-                      + hologram_file_name + '.tiff'), phase_reconstructed)
+        shar = np.squeeze(shar)
+        tf.imwrite(str(path_name + '/Result/' + 'result_Angular_Hann_shar_' + str(data) + '.tiff'), shar)
