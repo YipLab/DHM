@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>604</height>
+    <width>1391</width>
+    <height>854</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -17,10 +23,10 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>10</y>
-      <width>511</width>
-      <height>491</height>
+      <x>350</x>
+      <y>20</y>
+      <width>741</width>
+      <height>681</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -33,8 +39,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>510</y>
+      <x>890</x>
+      <y>730</y>
       <width>351</width>
       <height>23</height>
      </rect>
@@ -48,9 +54,15 @@
      <rect>
       <x>20</x>
       <y>30</y>
-      <width>231</width>
-      <height>171</height>
+      <width>271</width>
+      <height>181</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Agency FB</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -64,8 +76,8 @@
        <rect>
         <x>20</x>
         <y>10</y>
-        <width>181</width>
-        <height>111</height>
+        <width>221</width>
+        <height>131</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="Formatlayout">
@@ -86,7 +98,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>9</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="frameShape">
@@ -99,6 +111,12 @@
        </item>
        <item row="0" column="1">
         <widget class="QDoubleSpinBox" name="wavelengthDoubleSpinBox">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="decimals">
           <number>0</number>
          </property>
@@ -121,6 +139,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -130,6 +149,12 @@
        </item>
        <item row="1" column="1">
         <widget class="QDoubleSpinBox" name="pixelSizeDoubleSpinBox">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="minimum">
           <double>0.100000000000000</double>
          </property>
@@ -149,6 +174,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -158,6 +184,12 @@
        </item>
        <item row="2" column="1">
         <widget class="QDoubleSpinBox" name="magnificationDoubleSpinBox">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="decimals">
           <number>0</number>
          </property>
@@ -177,6 +209,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -186,6 +219,12 @@
        </item>
        <item row="3" column="1">
         <widget class="QDoubleSpinBox" name="diffractionIndexDoubleSpinBox">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="maximum">
           <double>2.000000000000000</double>
          </property>
@@ -209,8 +248,8 @@
        <rect>
         <x>20</x>
         <y>20</y>
-        <width>197</width>
-        <height>111</height>
+        <width>451</width>
+        <height>169</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout">
@@ -219,6 +258,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -234,6 +274,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -259,6 +300,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -284,6 +326,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -315,55 +358,27 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>220</y>
-      <width>251</width>
-      <height>241</height>
+      <y>240</y>
+      <width>321</width>
+      <height>231</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="title">
      <string/>
     </property>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Live Image</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>From Record</string>
-     </property>
-    </widget>
     <widget class="QWidget" name="formLayoutWidget_3">
      <property name="geometry">
       <rect>
        <x>20</x>
        <y>50</y>
-       <width>231</width>
-       <height>127</height>
+       <width>293</width>
+       <height>161</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
@@ -420,6 +435,12 @@
       </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="startDoubleSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="decimals">
          <number>0</number>
         </property>
@@ -467,50 +488,41 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="formLayoutWidget_4">
+    <widget class="QRadioButton" name="radioButton">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>190</y>
-       <width>251</width>
-       <height>41</height>
+       <x>20</x>
+       <y>0</y>
+       <width>188</width>
+       <height>34</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="1">
-       <widget class="QComboBox" name="fourierFilterComboBox">
-        <item>
-         <property name="text">
-          <string>Flat</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Hann</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Hann with Apodization</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="fourierFilterLabel">
-        <property name="text">
-         <string>Fourier Filter:</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="text">
+      <string>Live Image</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>188</width>
+       <height>34</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>From Record</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>480</y>
+      <x>40</x>
+      <y>600</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -530,8 +542,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>480</y>
+      <x>160</x>
+      <y>600</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -554,8 +566,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>22</height>
+     <width>1391</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
