@@ -42,7 +42,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>10</y>
       <width>600</width>
       <height>60</height>
      </rect>
@@ -195,7 +195,7 @@ TDHM</string>
      </rect>
     </property>
     <property name="text">
-     <string>Comming Soon</string>
+     <string>Comming</string>
     </property>
    </widget>
   </widget>
@@ -205,7 +205,7 @@ TDHM</string>
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFilt">
