@@ -26,12 +26,12 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="checkBox_recon">
    <property name="geometry">
     <rect>
      <x>110</x>
      <y>220</y>
-     <width>131</width>
+     <width>151</width>
      <height>20</height>
     </rect>
    </property>
@@ -52,8 +52,11 @@
 
 </string>
    </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
    <property name="text">
-    <string>Reconstruction</string>
+    <string>Reconstruction Enable</string>
    </property>
    <property name="iconSize">
     <size>
@@ -80,6 +83,9 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="text">
        <string>Wavelength (um)</string>
       </property>
@@ -96,6 +102,9 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="text">
        <string>Refractive Index</string>
       </property>
@@ -106,6 +115,9 @@
     </item>
     <item row="0" column="1">
      <widget class="QDoubleSpinBox" name="pixel_size">
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="minimum">
        <double>0.100000000000000</double>
       </property>
@@ -122,6 +134,9 @@
     </item>
     <item row="0" column="3">
      <widget class="QSpinBox" name="magnification">
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="minimum">
        <number>1</number>
       </property>
@@ -135,6 +150,9 @@
     </item>
     <item row="1" column="3">
      <widget class="QDoubleSpinBox" name="wave_length">
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="decimals">
        <number>3</number>
       </property>
@@ -160,6 +178,9 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="text">
        <string>Magnification</string>
       </property>
@@ -176,6 +197,9 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="text">
        <string>Pixel Size (um)</string>
       </property>
@@ -186,6 +210,9 @@
     </item>
     <item row="1" column="1">
      <widget class="QDoubleSpinBox" name="diffraction_index">
+      <property name="locale">
+       <locale language="English" country="Canada"/>
+      </property>
       <property name="maximum">
        <double>10.000000000000000</double>
       </property>
@@ -211,9 +238,13 @@
    <property name="font">
     <font>
      <family>Arial Black</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
    </property>
    <property name="text">
     <string>Confirm</string>
@@ -231,15 +262,19 @@
    <property name="font">
     <font>
      <family>Arial Black</family>
+     <pointsize>10</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
    </property>
    <property name="text">
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="Title_config">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -256,6 +291,9 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
    <property name="text">
     <string>Configuration Parameter</string>
    </property>
@@ -263,7 +301,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="Title_recon">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -280,11 +318,119 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
    <property name="text">
     <string>Reconstruction Setting</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="SpinBox_start_recon">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>260</y>
+     <width>60</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="SpinBox_end_recon">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>260</y>
+     <width>60</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="SpinBox_step_recon">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>260</y>
+     <width>60</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_start_recon">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>260</y>
+     <width>36</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>Start:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_end_recon">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>260</y>
+     <width>36</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>End:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_step_recon">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>260</y>
+     <width>36</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>Step:</string>
    </property>
   </widget>
  </widget>
