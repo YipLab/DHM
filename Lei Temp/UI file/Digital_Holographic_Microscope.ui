@@ -113,8 +113,9 @@ color: rgb(255, 255, 255);
      <string/>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 10pt &quot;Arial&quot;;
-background-color: rgb(205, 212, 255);</string>
+     <string notr="true">color: rgb(255, 255, 255);
+font: 87 10pt &quot;Arial Black&quot;;
+background-color: rgb(153, 135, 255);</string>
     </property>
     <property name="text">
      <string>Standard 
@@ -140,8 +141,9 @@ TDHM</string>
      <string>3D cell/particle tracking (please block the reference beam)</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Arial&quot;;
-background-color: rgb(205, 212, 255);</string>
+     <string notr="true">color: rgb(255, 255, 255);
+font: 87 10pt &quot;Arial Black&quot;;
+background-color: rgb(153, 135, 255);</string>
     </property>
     <property name="text">
      <string>3D tracking
@@ -164,8 +166,9 @@ In-line TDHM</string>
      <string>Standard TDHM with two wavelenth illumination</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 10pt &quot;Arial&quot;;
-background-color: rgb(205, 212, 255);</string>
+     <string notr="true">color: rgb(255, 255, 255);
+font: 87 10pt &quot;Arial Black&quot;;
+background-color: rgb(153, 135, 255);</string>
     </property>
     <property name="text">
      <string>Dual-wave

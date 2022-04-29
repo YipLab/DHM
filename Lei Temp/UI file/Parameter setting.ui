@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>SystemSetting</class>
+ <widget class="QDialog" name="SystemSetting">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -99,7 +99,7 @@
        <string>Wavelength (nm)</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -118,7 +118,7 @@
        <string>Refractive Index</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -200,7 +200,7 @@
        <string>Magnification</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -219,7 +219,7 @@
        <string>Pixel Size (um)</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -384,7 +384,7 @@
   <widget class="QDoubleSpinBox" name="SpinBox_step_recon">
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>460</x>
      <y>260</y>
      <width>60</width>
      <height>20</height>
@@ -420,6 +420,9 @@
    <property name="text">
     <string>Start(um):</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="label_end_recon">
    <property name="geometry">
@@ -442,13 +445,16 @@
    <property name="text">
     <string>End(um):</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="label_step_recon">
    <property name="geometry">
     <rect>
      <x>385</x>
      <y>260</y>
-     <width>61</width>
+     <width>71</width>
      <height>20</height>
     </rect>
    </property>
@@ -463,6 +469,9 @@
    </property>
    <property name="text">
     <string>Step(um):</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
   <widget class="QFrame" name="frame">
