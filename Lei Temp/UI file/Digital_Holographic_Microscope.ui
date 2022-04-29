@@ -49,9 +49,9 @@
     </property>
     <property name="font">
      <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>26</pointsize>
-      <weight>50</weight>
+      <family>Arial Black</family>
+      <pointsize>25</pointsize>
+      <weight>10</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -60,7 +60,7 @@
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 26pt  &quot;MS Shell Dlg 2&quot;;
+     <string notr="true">font: 87 25pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 
 </string>
