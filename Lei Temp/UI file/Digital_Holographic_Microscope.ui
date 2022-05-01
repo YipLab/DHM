@@ -282,7 +282,7 @@ background-color: qlineargradient(spread:pad, x1:0.0113636, y1:0, x2:0, y2:1, st
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFilt">

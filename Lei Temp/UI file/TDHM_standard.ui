@@ -189,14 +189,14 @@ font: 87 13pt &quot;Arial Black&quot;;</string>
              <number>0</number>
             </property>
             <item>
-             <layout class="QGridLayout" name="gridLayout_SOP_list" columnminimumwidth="3,2">
+             <layout class="QGridLayout" name="gridLayout_SOP_list">
               <property name="horizontalSpacing">
                <number>0</number>
               </property>
               <property name="verticalSpacing">
                <number>30</number>
               </property>
-              <item row="2" column="1">
+              <item row="1" column="1">
                <widget class="QPushButton" name="pushButton_system">
                 <property name="maximumSize">
                  <size>
@@ -214,12 +214,12 @@ background-color: rgb(153, 135, 255);</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="checkBox_calibration">
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="checkBox_system">
                 <property name="maximumSize">
                  <size>
                   <width>100</width>
-                  <height>22</height>
+                  <height>36</height>
                  </size>
                 </property>
                 <property name="layoutDirection">
@@ -233,7 +233,32 @@ color: rgb(255, 255, 255);</string>
                  <locale language="English" country="Canada"/>
                 </property>
                 <property name="text">
-                 <string>Calibration</string>
+                 <string>Parameter
+Setting</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="checkBox_calibration">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>36</height>
+                 </size>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);</string>
+                </property>
+                <property name="locale">
+                 <locale language="English" country="Canada"/>
+                </property>
+                <property name="text">
+                 <string>System
+Calibration</string>
                 </property>
                 <property name="checkable">
                  <bool>false</bool>
@@ -255,70 +280,6 @@ background-color: rgb(153, 135, 255);</string>
                 </property>
                 <property name="text">
                  <string>Start</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="checkBox_processing">
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);</string>
-                </property>
-                <property name="locale">
-                 <locale language="English" country="Canada"/>
-                </property>
-                <property name="text">
-                 <string>Process</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="pushButton_processing">
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(153, 135, 255);</string>
-                </property>
-                <property name="text">
-                 <string>Start</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="checkBox_system">
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);</string>
-                </property>
-                <property name="locale">
-                 <locale language="English" country="Canada"/>
-                </property>
-                <property name="text">
-                 <string>System</string>
                 </property>
                </widget>
               </item>
@@ -398,9 +359,9 @@ background-color: rgb(16, 160, 186);}</string>
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>0</y>
-              <width>161</width>
-              <height>372</height>
+              <y>-154</y>
+              <width>165</width>
+              <height>352</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -869,7 +830,7 @@ font: 87 9pt &quot;Arial Black&quot;;</string>
                   <enum>Qt::LeftToRight</enum>
                  </property>
                  <property name="text">
-                  <string>CheckBox</string>
+                  <string>Refocused Volume</string>
                  </property>
                 </widget>
                </item>
@@ -1159,7 +1120,7 @@ color: rgb(0, 0, 0);</string>
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="Figure" stretch="100,1">
+    <layout class="QVBoxLayout" name="Figure" stretch="0,0">
      <property name="leftMargin">
       <number>6</number>
      </property>
@@ -1176,15 +1137,25 @@ color: rgb(0, 0, 0);</string>
       <widget class="QGraphicsView" name="graphicsView"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <widget class="QTextBrowser" name="textBrowser">
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(210, 220, 255);</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QTextBrowser" name="textBrowser">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(179, 179, 179);</string>
+       </property>
+       <property name="html">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Note&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
