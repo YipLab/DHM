@@ -9,10 +9,10 @@ import sys
 
 from PyQt5 import QtWidgets, uic
 
-class LaunchChooser(QtWidgets.QMainWindow):
+class Launcher(QtWidgets.QMainWindow):
 	def __init__(self):
-		super(LaunchChooser, self).__init__() # Call the inherited classes __init__ method
-		uic.loadUi('./ui_files/launch_chooser.ui', self) # Load the .ui file
+		super(Launcher, self).__init__() # Call the inherited classes __init__ method
+		uic.loadUi('./ui_files/launcher_window.ui', self) # Load the .ui file
 
 		self.printButton.setText('Text Changed')
 		self.button = self.findChild(QtWidgets.QPushButton, 'printButton')
@@ -60,7 +60,7 @@ class TdhmWidgetStd(QtWidgets.QWidget):
 		print('printButtonPressed')
 
 app = QtWidgets.QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
-launcher = LaunchChooser() # Create an instance of our class
+launcher = Launcher() # Create an instance of our class
 syscalib = SysCalib()
 paramset = ParamSet()
 tdhm_widget = TdhmWidgetStd()
