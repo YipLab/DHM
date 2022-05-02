@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Uoft">
+    <file>UofT_label.png</file>
+  </qresource>
+</RCC>
