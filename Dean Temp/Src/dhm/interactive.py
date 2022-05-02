@@ -14,32 +14,23 @@ from typing import Optional, Tuple, List, Any
 import dhm.utils
 
 def read_local(path_name, background_file_name, hologram_file_name):
+
+    # def open_file(filepath: str):
+    # """Opens a file using the default application."""
+    # if _sys.platform.startswith('darwin'):
+    #     _subprocess.call(('open', filepath))
+    # elif _os.name == 'nt':
+    #     _os.startfile(filepath.replace("/", "\\"))  # Windows requires backslashes for network paths like \\server\bla
+    # elif _os.name == 'posix':
+    #     _subprocess.call(('xdg-open', filepath))
+
+    
     hologram_raw = plt.imread(str(path_name + hologram_file_name + '.tiff'))  # read the file
     hologram_raw = np.array(hologram_raw[:, :], dtype=float)  # reads first channel
     background_read = plt.imread(str(path_name + background_file_name + '.tiff'))
     background_read = np.array(background_read[:, :], dtype=float)
 
     return hologram_raw, background_read
-
-    # def ROI_manual_point(img1=None, img2=None):
-    #     plt.imshow(img1, cmap='gray')  # 8-bit grey scale
-    #     roi_x = plt.ginput(1)
-
-    #     top = np.int(np.subtract(roi_x[0][0], 200))
-    #     bot = np.int(np.add(roi_x[0][0], 200))
-    #     left = np.int(np.subtract(roi_x[0][1], 200))
-    #     right = np.int(np.add(roi_x[0][1], 200))
-
-    #     print(roi_x)
-    #     print(top, bot, left, right)
-
-    #     img1 = img1[left: right, top: bot]
-    #     img2 = img2[left: right, top: bot]
-    #     plt.imshow(img1, cmap='gray')
-    #     plt.ginput(1)
-    #     print('The position of ROI: ', roi_x)
-    #     return img1, img2, top, bot, left, right
-
 
 def filter_fixed_point(hologram_raw, quadrant:int):
 

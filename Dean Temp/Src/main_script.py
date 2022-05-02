@@ -1,9 +1,12 @@
-#INIT DHM
+#!/usr/bin/env python3
+
+import os.path
+import sys
 
 import dhm.core
 import dhm.interactive
 import dhm.utils
-from typing import Optional, Tuple, List, Any
+# import dhm.gui
 
 
 holo, bgd = dhm.interactive.read_local("../../Example Images/", "reference_background", "tdhm_hologram")
