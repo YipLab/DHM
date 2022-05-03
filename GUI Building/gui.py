@@ -8,12 +8,16 @@ import sys
 # import dhm.utils
 
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
 
 
 class Launcher(QtWidgets.QMainWindow):
     def __init__(self):
         super(Launcher, self).__init__()  # Call the inherited classes __init__ method
-        uic.loadUi('./ui_files/launch_chooser.ui', self)  # Load the .ui file
+        uic.loadUi('./ui_files/launcher_window.ui', self)  # Load the .ui file
 
         self.std_TDHM = TdhmWidgetStd()
 
@@ -43,21 +47,21 @@ class ParamSet(QtWidgets.QDialog):
         super(ParamSet, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/param_set_dialog.ui', self)  # Load the .ui file
 
-        self.pushButton_confirm.clicked.connect(self.para_set_confirm)
-        self.pushButton_cancel.clicked.connect(self.para_set_cancel)
+        self.pushButton_confirm.clicked.connect(self.param_set_confirm)
+        self.pushButton_cancel.clicked.connect(self.param_set_cancel)
 
-    def para_set_confirm(self):
+    def param_set_confirm(self):
         #TdhmWidgetStd.checkBox_system.setChecked(True)
         # Here we should use "signal" to realize it. After clicking 'confirm', the coresponding checkbox in TdhmWidgetStd should be checked
         self.close()
 
-    def para_set_cancel(self):
+    def param_set_cancel(self):
         self.close()
 
 
-def printButtonPressed(self):
-    # This is executed when the button is pressed
-    print('Input text:' + self.input.text())
+# def PrintButtonPressed(self):
+#     # This is executed when the button is pressed
+#     print('Input text:' + self.input.text())
 
 
 # syscalib = SysCalib()
