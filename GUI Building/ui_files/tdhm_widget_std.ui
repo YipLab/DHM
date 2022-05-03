@@ -236,6 +236,9 @@ color: rgb(255, 255, 255);</string>
                  <string>Parameter
 Setting</string>
                 </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
