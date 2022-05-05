@@ -61,7 +61,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">font: 87 25pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);
+
 
 </string>
     </property>
@@ -76,7 +76,7 @@ color: rgb(255, 255, 255);
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>340</y>
+      <y>300</y>
       <width>200</width>
       <height>20</height>
      </rect>
@@ -94,10 +94,10 @@ color: rgb(255, 255, 255);
    <widget class="QPushButton" name="standard_TDHM">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>50</x>
       <y>110</y>
-      <width>130</width>
-      <height>60</height>
+      <width>150</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -113,9 +113,9 @@ color: rgb(255, 255, 255);
      <string/>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
+     <string notr="true">
 font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(153, 135, 255);</string>
+</string>
     </property>
     <property name="text">
      <string>Standard 
@@ -127,8 +127,8 @@ TDHM</string>
      <rect>
       <x>240</x>
       <y>110</y>
-      <width>130</width>
-      <height>60</height>
+      <width>150</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -141,9 +141,9 @@ TDHM</string>
      <string>3D cell/particle tracking (please block the reference beam)</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
+     <string notr="true">
 font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(153, 135, 255);</string>
+</string>
     </property>
     <property name="text">
      <string>3D tracking
@@ -155,8 +155,8 @@ In-line TDHM</string>
      <rect>
       <x>430</x>
       <y>110</y>
-      <width>111</width>
-      <height>61</height>
+      <width>150</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -166,9 +166,9 @@ In-line TDHM</string>
      <string>Standard TDHM with two wavelenth illumination</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
+     <string notr="true">
 font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(153, 135, 255);</string>
+</string>
     </property>
     <property name="text">
      <string>Dual-wave
@@ -178,15 +178,15 @@ TDHM</string>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>50</x>
       <y>200</y>
-      <width>130</width>
-      <height>60</height>
+      <width>150</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 10pt &quot;Arial&quot;;
-background-color: rgb(205, 212, 255);</string>
+</string>
     </property>
     <property name="text">
      <string>Comming</string>
@@ -196,85 +196,38 @@ background-color: rgb(205, 212, 255);</string>
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>290</y>
+      <y>250</y>
       <width>131</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 75 bold 26pt &quot;Calibri&quot;;
-color:rgb(10, 10, 255)</string>
+</string>
     </property>
     <property name="text">
      <string>Yip Lab</string>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>600</width>
-      <height>400</height>
+      <x>20</x>
+      <y>300</y>
+      <width>281</width>
+      <height>41</height>
      </rect>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>220</horstretch>
-      <verstretch>50</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="sizeIncrement">
-     <size>
-      <width>1</width>
-      <height>0</height>
-     </size>
-    </property>
     <property name="styleSheet">
-     <string notr="true">QFrame#frame{
-background-color: qlineargradient(spread:pad, x1:0.0113636, y1:0, x2:0, y2:1, stop:0 rgba(0, 73, 255, 255), stop:0.522727 rgba(21, 163, 255, 255), stop:1 rgba(255, 255, 255, 255));}</string>
+     <string notr="true">background-color: rgb(220, 220, 220);</string>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+    <property name="text">
+     <string/>
     </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+    <property name="pixmap">
+     <pixmap>icons/UofT_label.png</pixmap>
     </property>
-    <widget class="QWidget" name="widget_2" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>280</y>
-       <width>271</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-       <horstretch>200</horstretch>
-       <verstretch>40</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeIncrement">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-image: url(:/Uoft/UofT_label.png);
-</string>
-     </property>
-    </widget>
    </widget>
-   <zorder>frame</zorder>
-   <zorder>label</zorder>
-   <zorder>version</zorder>
-   <zorder>standard_TDHM</zorder>
-   <zorder>in_line_TDHM</zorder>
-   <zorder>pushButton_2</zorder>
-   <zorder>pushButton_3</zorder>
-   <zorder>label_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

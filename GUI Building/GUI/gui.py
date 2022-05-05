@@ -7,7 +7,9 @@ import sys
 # import dhm.interactive
 # import dhm.utils
 
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic, QtCore, QtGui
+from qt_material import apply_stylesheet
+import qdarkstyle
 from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -74,6 +76,14 @@ class ParamSet(QtWidgets.QDialog):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)  # Create an instance of QtWidgets.QApplication
+    #apply_stylesheet(app, theme='dark_teal.xml')
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    '''
+    File = open('./ui_files/styles/Obit.qss', 'r')
+    with File:
+        qss_style = File.read()
+        app.setStyleSheet(qss_style)
+    '''
     launcher = Launcher()  # Create an instance of our class
     launcher.show()
 
