@@ -12,13 +12,13 @@ from skimage.restoration import unwrap_phase  # intall 'Microsoft's vcredist_x64
 import openpyxl
 from typing import Optional, Tuple, List, Any
 
+
 # def ROI_apply(img1, top, bot, left, right):
 #     img1 = img1[left: right, top: bot]
 #     return img1
 
 
 def hanning_filter(m_x, n_y, c_x, c_y, r):
-
     hann = np.sqrt(np.outer(np.hanning(r * 2), np.hanning(r * 2)))
     hann = np.pad(hann, ((int(c_x - r), int(m_x - c_x - r)), (int(c_y - r), int(n_y - c_y - r))), 'constant')
 
@@ -31,6 +31,7 @@ def fourier_process(img_pre, filter_pre):
     fourier_selected = np.fft.ifft2(fourier_selected)
 
     return fourier_selected
+
 
 def flat_window(l_end, l_begin, a, b, k_fac):
     line = np.linspace(1, l_end, l_end)
@@ -46,6 +47,7 @@ def flat_window(l_end, l_begin, a, b, k_fac):
 
     w = w1 + w2 + w3
     return w
+
 
 def apodization_process(img, k_factor, expansion):
     l0x, l0y = img.shape
@@ -71,6 +73,7 @@ def apodization_process(img, k_factor, expansion):
 
     return img_processed
 
+
 def sharpness_test(img, shar):
     img = background_unit(img)
     img_gaussian = gaussian(img, sigma=1)
@@ -84,7 +87,8 @@ def sharpness_test(img, shar):
     shar.append(img)
     return sharp
 
-#in continuous mode, should not use Angular
+
+# in continuous mode, should not use Angular
 def angular_spectrum(hologram, img_res, kz, mask, term, scale, pos, expansion, vol):
     image_phase = []
     intensity = []
@@ -112,7 +116,7 @@ def angular_spectrum(hologram, img_res, kz, mask, term, scale, pos, expansion, v
         reconstructed_phase = np.angle(e)
         image_phase.append(reconstructed_phase)
 
-        #TODO: Isolate pd and path name!
+        # TODO: Isolate pd and path name!
     sharpness_data = pd.DataFrame({"Sharpness_intensity": sharpness_res, "diffraction distance": diffraction_dis})
     sharpness_data.to_excel(str('./result/' + 'Sharpness' + str(term) + '.xls'), engine='openpyxl')
     intensity = np.squeeze(intensity)
@@ -139,7 +143,9 @@ def angular_mask(image, vector, delta, rec_scale):
 def reconstruction_angular(hologram, image, vertical_step, vector, delta, expansion, rec_scale):
     fft_img, kz, mask, n_x, m_y = angular_mask(image, vector, delta, rec_scale)
     sharpness_second, diffraction_dis_2, image_phase_stack, intensity_2 = angular_spectrum(hologram, fft_img, kz, mask,
-                                                                                           2, rec_scale, rec_scale/(-2), expansion, vertical_step)
+                                                                                           2, rec_scale,
+                                                                                           rec_scale / (-2), expansion,
+                                                                                           vertical_step)
     index_img_max = np.argmax(sharpness_second)
     distance = diffraction_dis_2[index_img_max]
 
@@ -150,7 +156,6 @@ def reconstruction_angular(hologram, image, vertical_step, vector, delta, expans
 
 
 def background_unit(img):
-
     img = img - gaussian(img, sigma=150)
     histogram, bin_edges = np.histogram(img, bins=256)
     max_histogram = bin_edges[np.argmax(histogram)]

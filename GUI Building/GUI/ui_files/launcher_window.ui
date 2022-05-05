@@ -212,20 +212,53 @@ TDHM</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>300</y>
-      <width>281</width>
-      <height>41</height>
+      <width>201</width>
+      <height>26</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Calibri</family>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(220, 220, 220);</string>
+     <string notr="true">font: 75 bold 16pt &quot;Calibri&quot;;
+</string>
     </property>
     <property name="text">
-     <string/>
+     <string>University of Toronto</string>
     </property>
-    <property name="pixmap">
-     <pixmap>icons/UofT_label.png</pixmap>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>320</y>
+      <width>291</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Calibri</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 bold 12pt &quot;Calibri&quot;;
+</string>
+    </property>
+    <property name="text">
+     <string>Institude of Biomedical Engineering</string>
     </property>
    </widget>
   </widget>

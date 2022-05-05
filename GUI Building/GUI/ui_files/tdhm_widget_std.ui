@@ -917,6 +917,25 @@ font: 87 9pt &quot;Arial Black&quot;;</string>
            <property name="text">
             <string>Live Image</string>
            </property>
+           <property name="autoExclusive">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton">
+           <property name="maximumSize">
+            <size>
+             <width>160</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 87 10pt &quot;Arial Black&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Save Image</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -1050,7 +1069,7 @@ font: 87 10pt &quot;Arial Black&quot;;
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_4">
+          <widget class="QLineEdit" name="lineEdit_save_add">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1066,7 +1085,7 @@ font: 87 10pt &quot;Arial Black&quot;;
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_13">
+          <widget class="QPushButton" name="pushButton_save_add">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1089,12 +1108,11 @@ font: 87 10pt &quot;Arial Black&quot;;
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="Button">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pushButton_8">
+        <widget class="QPushButton" name="pushButton_start">
          <property name="styleSheet">
-          <string notr="true">
-font: 87 20pt &quot;Arial Black&quot;;
+          <string notr="true">font: 87 20pt &quot;Arial Black&quot;;
 </string>
          </property>
          <property name="text">
@@ -1103,7 +1121,7 @@ font: 87 20pt &quot;Arial Black&quot;;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_9">
+        <widget class="QPushButton" name="pushButton_stop">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
