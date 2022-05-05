@@ -34,7 +34,7 @@ background-color: qlineargradient(spread:pad, x1:0.0113636, y1:0, x2:0, y2:1, st
     <number>2</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="Set" stretch="0,1,40,40,40">
+    <layout class="QVBoxLayout" name="Set" stretch="1,3,3,6,6">
      <property name="spacing">
       <number>10</number>
      </property>
@@ -51,7 +51,7 @@ background-color: qlineargradient(spread:pad, x1:0.0113636, y1:0, x2:0, y2:1, st
       <number>0</number>
      </property>
      <property name="bottomMargin">
-      <number>30</number>
+      <number>50</number>
      </property>
      <item>
       <layout class="QVBoxLayout" name="Label">
@@ -215,7 +215,10 @@ background-color: rgb(153, 135, 255);</string>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QCheckBox" name="checkBox_system">
+               <widget class="QCheckBox" name="checkBox_parameter">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>100</width>
@@ -236,10 +239,16 @@ color: rgb(255, 255, 255);</string>
                  <string>Parameter
 Setting</string>
                 </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QCheckBox" name="checkBox_calibration">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>100</width>
@@ -261,7 +270,7 @@ color: rgb(255, 255, 255);</string>
 Calibration</string>
                 </property>
                 <property name="checkable">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -859,7 +868,7 @@ font: 87 9pt &quot;Arial Black&quot;;</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_9">
          <item>
-          <widget class="QRadioButton" name="radioButton_2">
+          <widget class="QRadioButton" name="radioButton_liveimg">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -935,7 +944,7 @@ background-color: rgb(153, 135, 255);</string>
           <number>1</number>
          </property>
          <item>
-          <widget class="QLabel" name="label_68">
+          <widget class="QLabel" name="label_read_add">
            <property name="font">
             <font>
              <family>Arial Black</family>
@@ -950,7 +959,7 @@ background-color: rgb(153, 135, 255);</string>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_3">
+          <widget class="QLineEdit" name="lineEdit_read_add">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -966,7 +975,7 @@ background-color: rgb(153, 135, 255);</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_12">
+          <widget class="QPushButton" name="pushButton_read_add">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>

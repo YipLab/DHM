@@ -228,7 +228,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="diffraction_index">
+     <widget class="QDoubleSpinBox" name="refractive_index">
       <property name="locale">
        <locale language="English" country="Canada"/>
       </property>
