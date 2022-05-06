@@ -84,8 +84,8 @@ class HoloGram:
 		self._magnification = magnification
 		self._wavelength = wavelength  # 640nm
 
-		self.vector = 2 * self.diffraction_index * np.pi / self.wavelength
-		self.delta = self.pixel_x / self.magnification
+		self.vector = 2 * self._diffraction_index * np.pi / self._wavelength
+		self.delta = self._pixel_x / self._magnification
 
 	def get_sys_param(self) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[int], Optional[float]]:
 		print  ("pixel_x = "+str(self._pixel_x)+"um\n"\
