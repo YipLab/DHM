@@ -3,9 +3,9 @@
 import os.path
 import sys
 from tkinter.filedialog import askdirectory
-# import dhm.core
-# import dhm.interactive
-# import dhm.utils
+import dhm.core
+import dhm.interactive
+import dhm.utils
 
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from qt_material import apply_stylesheet
@@ -98,6 +98,10 @@ class ParamSet(QtWidgets.QDialog):
         self.pushButton_confirm.clicked.connect(self.param_set_confirm)
         self.pushButton_cancel.clicked.connect(self.param_set_cancel)
 
+        h1.set_sys_param(pixel_x = 1.85, pixel_y = 1.85, refractive_index = 1.52, \
+                        magnification = 10, wavelength = 0.640)
+        h1.get_sys_param()
+        
     def param_set_confirm(self):
         self.close()
 
@@ -117,6 +121,8 @@ if __name__ == '__main__':
     with File:
         qss_style = File.read()
         app.setStyleSheet(qss_style)
+
+    h1 = dhm.core.HoloGram()
 
     launcher = Launcher()  # Create an instance of our class
     launcher.show()
