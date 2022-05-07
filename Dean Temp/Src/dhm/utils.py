@@ -99,7 +99,7 @@ def angular_spectrum(hologram, img_res, kz, mask, term, scale, pos, expansion, v
         df = pos + z * scale / vol
         c = np.where(mask, img_res * np.exp(complex(0, 1) * kz * df), 0)
         e = np.fft.ifft2(np.fft.ifftshift(c))
-        e = e[expansion: expansion + hologram.hologram.shape[0], expansion: expansion + hologram.hologram.shape[1]]
+        e = e[expansion: expansion + hologram.HOLOGRAM[0].shape[0], expansion: expansion + hologram.HOLOGRAM[0].shape[1]]
 
         reconstructed_in = np.real(e * np.conjugate(e))
         # sharp_value_intensity = cv2.Laplacian(reconstructed_in, cv2.CV_64F).var()
@@ -136,10 +136,11 @@ def angular_mask(image, vector, delta, rec_scale):
     return a, kz, mask, n_x, m_y
 
 
-def reconstruction_angular(hologram, image, vertical_step, vector, delta, expansion, rec_scale):
-    fft_img, kz, mask, n_x, m_y = angular_mask(image, vector, delta, rec_scale)
-    sharpness_second, diffraction_dis_2, image_phase_stack, intensity_2 = angular_spectrum(hologram, fft_img, kz, mask,
-                                                                                           2, rec_scale, rec_scale/(-2), expansion, vertical_step)
+def reconstruction_angular(holo, image, vertical_step):
+    fft_img, kz, mask, n_x, m_y = angular_mask(image, holo.vector, holo.delta, holo.rec_scale)
+    
+    sharpness_second, diffraction_dis_2, image_phase_stack, intensity_2 = angular_spectrum(holo, fft_img, kz, mask,
+                                                                                           2, holo.rec_scale, holo.rec_pos, holo._expansion, vertical_step)
     index_img_max = np.argmax(sharpness_second)
     distance = diffraction_dis_2[index_img_max]
 

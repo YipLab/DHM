@@ -20,8 +20,10 @@ h1.set_recon_param(recon_enable=True, rec_start=0.00, rec_end=0.00, rec_step=0.0
 h1.get_recon_param()
 
 h1.set_read_path("../../Example Images/")
+h1.set_save_path("./result/")
 h1.set_background_img("reference_background")
 h1.add_hologram_img("tdhm_hologram")
 
-# h1.set_roi_by_param(100, 300, 200,400)
-# h1.process_roi(filter_quadrant = 3, num_data = 1, k_factor = 1.5, vertical_step = 2, rec_scale = 10)
+# h1.set_roi_by_param(822, 2412, 1609, 3727)
+h1.set_roi_by_param(0, 3000, 0, 4000)
+h1.process_roi(filter_quadrant = 3, num_data = 1, k_factor = 1.5, vertical_step = 2)
