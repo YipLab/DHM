@@ -3,16 +3,19 @@
 import os.path
 import sys
 from tkinter.filedialog import askdirectory
-import dhm.core
-import dhm.interactive
-import dhm.utils
-
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
+# import dhm.core
+# import dhm.interactive
+# import dhm.utils
+import tifffile as tf
+import random
+import numpy as np
+from PyQt5 import QtWidgets, uic
+from matplotlib.backends.qt_compat import QtCore
 from qt_material import apply_stylesheet
 import qdarkstyle
-from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
 
@@ -26,13 +29,23 @@ class Launcher(QtWidgets.QMainWindow):
         self.standard_TDHM.clicked.connect(self.std_TDHM.show)
 
 
-class TdhmWidgetStd(QtWidgets.QWidget):
+class TdhmWidgetStd(QtWidgets.QMainWindow):
     def __init__(self):
         super(TdhmWidgetStd, self).__init__()  # Call the inherited classes __init__ method
-        uic.loadUi('./ui_files/tdhm_widget_std.ui', self)  # Load the .ui file
+        uic.loadUi('./ui_files/std_main.ui', self)  # Load the .ui file
+
+        self.img_canvas = FigureCanvas(Figure())
+        self.img_canvas.minimumWidth = 800
+        self.img_canvas.minimumHeight = 600
+        self.figure_layout.addWidget(self.img_canvas)
+
+        self.Bar_layout.addWidget(NavigationToolbar(self.img_canvas, self))
 
         self.save_path = None
         self.read_path = None
+        self.hologram = None
+        self.background = None
+        self.image_show = None
 
         self.SysCalibration = SysCalib()
         self.Parameter = ParamSet()
@@ -46,7 +59,18 @@ class TdhmWidgetStd(QtWidgets.QWidget):
         self.checkBox_calibration.stateChanged.connect(self.sop_check)
         self.checkBox_parameter.stateChanged.connect(self.sop_check)
 
-        # self.pushButton_start.clicked.connect(self.start)
+        self.pushButton_start.clicked.connect(self.start)
+        self.image_show = tf.imread(self.lineEdit_read_add.text() + '/1.tiff')
+        self.image_show = np.array(self.image_show[:, :], dtype=float)
+
+        self.image_figure = self.img_canvas.figure.subplots()
+        #t = np.linspace(0, 10, 501)
+        #self.image_figure.plot(t, np.tan(t), ".")
+        self.image_figure.imshow(self.image_show, cmap='gist_gray')
+
+    def start(self):
+        #self.image_show = tf.imread(self.lineEdit_read_add.value + '/1.tiff')
+        print('erwer')
 
     def sop_check(self):
         if self.checkBox_parameter.isChecked():
@@ -98,10 +122,6 @@ class ParamSet(QtWidgets.QDialog):
         self.pushButton_confirm.clicked.connect(self.param_set_confirm)
         self.pushButton_cancel.clicked.connect(self.param_set_cancel)
 
-        h1.set_sys_param(pixel_x = 1.85, pixel_y = 1.85, refractive_index = 1.52, \
-                        magnification = 10, wavelength = 0.640)
-        h1.get_sys_param()
-        
     def param_set_confirm(self):
         self.close()
 
@@ -121,8 +141,6 @@ if __name__ == '__main__':
     with File:
         qss_style = File.read()
         app.setStyleSheet(qss_style)
-
-    h1 = dhm.core.HoloGram()
 
     launcher = Launcher()  # Create an instance of our class
     launcher.show()

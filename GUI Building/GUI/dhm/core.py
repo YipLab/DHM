@@ -1,9 +1,9 @@
 # #####################################################################################################################
 # This program is for digital holographic microscope
 # Main Idea:
-#			Auto-Focusing with Angular Spectrum (Fourier sharpness);
-#			Auto-Fourier Filtering;
-#			Phase unwrapping
+#            Auto-Focusing with Angular Spectrum (Fourier sharpness);
+#            Auto-Fourier Filtering;
+#            Phase unwrapping
 #
 # Camera Info: FLIR BFS-U3-120S4M-CS, Pixel size: 1.85um, (4000 x 3000)
 #
@@ -13,13 +13,16 @@
 ##DHM_core
 
 import numpy as np
+from tkinter.filedialog import askdirectory
 import tifffile as tf
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import math
-from skimage.restoration import unwrap_phase  
-# On Windows, intall 'Microsoft's vcredist_x64.exe' if it does not work 
+# import pandas as pd
+from skimage.filters import gaussian
+from skimage.restoration import unwrap_phase  # intall 'Microsoft's vcredist_x64.exe' if it not work 
 # ( https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) 
+# import openpyxl
 
 import dhm.interactive
 import dhm.utils
@@ -28,216 +31,174 @@ from typing import Optional, Tuple, List, Any
 
 
 class HoloGram:
-	
-	SHAR = []
-	HOLOGRAM = []
-	BACKGROUND = np.ndarray(shape=(100,100), dtype=np.uint8)
+    _COMPLEX_J = complex(0, 1)
+    SHAR = []
 
-	# System Parameter (Do not put these parameter into "self", or they won't be changed after)
-	_pixel_x = 1.85
-	_pixel_y = 1.85  # micro-meter (unit)
-	_refractive_index = 1.52
-	_magnification = 10
-	_wavelength = 0.640  # 640nm
-	_expansion = 100
+    # System Parameter (Do not put these parameter into "self", or they won't be changed after)
+    _pixel_x = 1.85
+    _pixel_y = 1.85  # micro-meter (unit)
+    _refractive_index = 1.52
+    _magnification = 10
+    _wavelength = 0.640  # 640nm
 
-	_shape_x = 0
-	_shape_y = 0
+    def __init__(self, hologram, background):
+        self.hologram = hologram
+        self.background = background
+        # customized parameter
+        self._expansion = 100
 
-	def __init__(self):
-		# self.hologram = hologram
-		# self.background = background
-		
-		# Customized parameter
-		# self._shape_x = 0
-		# self._shape_y = 0
+        self._shape_x = hologram.shape[0]
+        self._shape_y = hologram.shape[1]
 
-		# Reconstruction parameter
-		self.recon_enable = False
-		self.rec_scale = 10
-		self.rec_pos = self.rec_scale / (-2)
+        # Reconstruction parameter
+        # self.rec_scale = 10
+        # self.rec_pos = rec_scale / (-2)
 
-		self.vector = 2 * self._refractive_index * np.pi / self._wavelength
-		self.delta = self._pixel_x / self._magnification
+        self.vector = 2 * self._refractive_index * np.pi / self._wavelength
+        self.delta = self._pixel_x / self._magnification
 
-		# ROI Settings
-		self.left = None
-		self.right = None
-		self.top = None
-		self.bot = None
+        self.left = None
+        self.right = None
+        self.top = None
+        self.bot = None
 
-		# Directory settings
-		self.read_path = ''
+    def set_hologram_img(self, hologram):
 
-	def set_background_img(self, bgd_file_name):
+        if (hologram.shape() != self.hologram.shape()):
+            self.left = None
+            self.right = None
+            self.top = None
+            self.bot = None
 
-		self.BACKGROUND = np.array(plt.imread(str(self.read_path + bgd_file_name + '.tiff'))[:, :], dtype=float)
-		self._shape_x = self.BACKGROUND.shape[0]
-		self._shape_y = self.BACKGROUND.shape[1]
-		print("Background is set, resolution is ("+str(self._shape_x)+","+str(self._shape_y)+")")
+            print("Hologram image size changed, ROI is reset")
 
-	def add_hologram_img(self, holo_file_name):
+        self.hologram = hologram
+        self._shape_x = hologram.shape[0]
+        self._shape_y = hologram.shape[1]
 
-		hologram = np.array(plt.imread(str(self.read_path + holo_file_name + '.tiff'))[:, :], dtype=float)
+    def set_sys_param(self, pixel_x: float = 1.85, pixel_y: float = 1.85, refractive_index: float = 1.52,
+                      magnification: int = 10, wavelength: float = 0.640):
+        self._pixel_x = pixel_x
+        self._pixel_y = pixel_y  # micro-meter (unit)
+        self._refractive_index = refractive_index
+        self._magnification = magnification
+        self._wavelength = wavelength  # 640nm
 
-		if (hologram.shape != self.BACKGROUND.shape):
-			print ("Background resolution is ("+str(self._shape_x)+","+str(self._shape_y)+")")
-			print ("Hologram resolution is ("+str(hologram.shape[0])+","+str(hologram.shape[1])+")")
-			print ("Hologram and Background resolutions do not match!")
+        self.vector = 2 * refractive_index * np.pi / wavelength
+        self.delta = pixel_x / magnification
 
-		# if (hologram.shape() != self.hologram.shape()):
-		#	 self.left = None
-		#	 self.right = None
-		#	 self.top = None
-		#	 self.bot = None
+    def get_sys_param(self) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[int], Optional[float]]:
+        print("pixel_x = " + str(self._pixel_x) + "um\n""pixel_y = " + str(self._pixel_y) + "um\n""diffraction_index = " + str(
+            self._refractive_index) + "\n""magnification = " + str(self._magnification) + "\n""wavelength = " + str(
+            self._wavelength) + "nm\n")
+        return self._pixel_x, self._pixel_y, self._refractive_index, self._magnification, self._wavelength
 
-		#	 print("Hologram image size changed, ROI is reset")
+    def set_expansion(self, expansion=100):
+        self._expansion = expansion
 
-		self.HOLOGRAM.append(hologram)
+    def get_expansion(self, expansion=100) -> int:
+        print("expansion factor = " + str(self._expansion) + "\n")
+        return self._expansion
 
-	def set_read_path(self, read_path):
-		self.read_path = read_path
+    def holo_roi_show(self):
+        print("Currently viewing ROI: (left, right, top, bottom) = (" + str(self.left) + ", " + str(
+            self.right) + ", " + str(self.top) + ", " + str(self.bot) + "),\n" \
+                                                                        "Whole image size is: (" + str(
+            self._shape_x) + ", " + str(self._shape_y) + ")")
+        plt.imshow(self.hologram[self.left: self.right, self.top: self.bot], cmap='gray')  # 8-bit grey scale
+        plt.ginput(1)
 
-	def set_save_path(self, save_path):
-		self.save_path = save_path
+    def holo_show(self):
+        print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
+            self._shape_y) + ")")
+        plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
+        plt.ginput(1)
 
-	def set_sys_param(self, pixel_x: float = 1.85, pixel_y: float = 1.85, refractive_index: float = 1.52,
-					  magnification: int = 10, wavelength: float = 0.640):
-		self._pixel_x = pixel_x
-		self._pixel_y = pixel_y  # micro-meter (unit)
-		self._refractive_index = refractive_index
-		self._magnification = magnification
-		self._wavelength = wavelength  # 640nm
+    def set_roi_by_centre(self, radius=200):
+        print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
+            self._shape_y) + ")")
+        print("Set ROI by Centre: Click to set the centre of ROI with a raidus of :" + str(radius))
+        plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
+        roi_x = plt.ginput(1)
+        self.top = np.int(np.subtract(roi_x[0][0], radius))
+        self.bot = np.int(np.add(roi_x[0][0], radius))
+        self.left = np.int(np.subtract(roi_x[0][1], radius))
+        self.right = np.int(np.add(roi_x[0][1], radius))
+        print("ROI updated to: (left, right, top, bottom)= (" + str(self.left) + ", " + str(self.right) + ", " + str(
+            self.top) + ", " + str(self.bot) + "),\n")
 
-		self.vector = 2 * refractive_index * np.pi / wavelength
-		self.delta = pixel_x / magnification
+    def set_roi_by_corner(self):
+        print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
+            self._shape_y) + ")")
+        print("Set ROI by Corner: Click the desired top left and bottom right corner to set ROI coordinates")
+        plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
+        roi_x, roi_y = plt.ginput(2)
 
-	def set_recon_param(self, recon_enable:bool, rec_start:float=0.00, rec_end:float=0.00, rec_step:float=0.00, detect_method:str = "FA"):
-		if(recon_enable is True):
-			self.recon_enable = recon_enable
-			self._rec_start = rec_start
-			self._rec_end = rec_end
-			self._rec_step = rec_step
-			self.detect_method = detect_method
+        top = int(roi_x[0])
+        bot = int(roi_y[0])
+        left = int(roi_x[1])
+        right = int(roi_y[1])
 
-	def get_recon_param(self) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[str]]:
-		if (self.recon_enable is False):
-			print("Reconstruction Disabled.")
-		else:
-			return self._rec_start, self._rec_end, self._rec_step, self.detect_method
+        if (top - bot) % 2 != 0:
+            bot = bot - 1
+        if (left - right) % 2 != 0:
+            right = right - 1
 
-	def get_sys_param(self) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[int], Optional[float]]:
-		print("pixel_x = " + str(self._pixel_x) + "um\n""pixel_y = " + str(self._pixel_y) + "um\n""diffraction_index = " + str(
-			self._refractive_index) + "\n""magnification = " + str(self._magnification) + "\n""wavelength = " + str(
-			self._wavelength) + "nm\n")
-		return self._pixel_x, self._pixel_y, self._refractive_index, self._magnification, self._wavelength
+        self.top = top
+        self.bot = bot
+        self.left = left
+        self.right = right
+        print("ROI updated to: (left, right, top, bottom)= (" + str(self.left) + ", " + str(self.right) + ", " + str(
+            self.top) + ", " + str(self.bot) + "),\n")
 
-	def set_expansion(self, expansion=100):
-		self._expansion = expansion
+    def set_roi_by_param(self, left: int, right: int, top: int, bottom: int) -> int:
+        self.top = top
+        self.bot = bottom
+        self.left = left
+        self.right = right
+        print("ROI set to: (left, right, top, bottom) = (" + str(self.left) + ", " + str(self.right) + ", " + str(
+            self.top) + ", " + str(self.bot) + "),\n")
 
-	def get_expansion(self, expansion=100) -> int:
-		print("expansion factor = " + str(self._expansion) + "\n")
-		return self._expansion
+    def get_roi(self) -> Optional[Tuple[int, int, int, int]]:
+        print("ROI set to: (left, right, top, bottom) = (" + str(self.left) + ", " + str(self.right) + ", " + str(
+            self.top) + ", " + str(self.bot) + "),\n")
+        return self.left, self.right, self.top, self.bot
 
-	def holo_roi_show(self):
-		print("Currently viewing ROI: (left, right, top, bottom) = (" + str(self.left) + ", " + str(
-			self.right) + ", " + str(self.top) + ", " + str(self.bot) + "),\n" \
-																		"Whole image size is: (" + str(
-			self._shape_x) + ", " + str(self._shape_y) + ")")
-		plt.imshow(self.hologram[self.left: self.right, self.top: self.bot], cmap='gray')  # 8-bit grey scale
-		plt.ginput(1)
+    def process_roi(self, filter_quadrant: int = 3, num_data: int = 1, k_factor=1.5, vertical_step: int = 2,
+                    rec_scale: int = 10):
+        # if (self.get_roi() == [None, None, None, None]):
+        # 	print("ROI not set yet. Please set ROI")
+        # 	self.set_roi_by_corner()
+        self.set_roi_by_corner()
 
-	def holo_show(self):
-		print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
-			self._shape_y) + ")")
-		plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
-		plt.ginput(1)
+        circle_filter = dhm.interactive.filter_fixed_point(self.hologram[self.left: self.right, self.top: self.bot],
+                                                           filter_quadrant)
+        back_filtered = dhm.utils.fourier_process(self.background[self.left: self.right, self.top: self.bot],
+                                                  circle_filter)
+        back_filtered = np.exp(self._COMPLEX_J * np.angle(np.conj(back_filtered)))
 
-	def set_roi_by_centre(self, radius=200):
-		print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
-			self._shape_y) + ")")
-		print("Set ROI by Centre: Click to set the centre of ROI with a raidus of :" + str(radius))
-		plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
-		roi_x = plt.ginput(1)
-		self.top = np.int(np.subtract(roi_x[0][0], radius))
-		self.bot = np.int(np.add(roi_x[0][0], radius))
-		self.left = np.int(np.subtract(roi_x[0][1], radius))
-		self.right = np.int(np.add(roi_x[0][1], radius))
-		print("ROI updated to: (left, right, top, bottom)= (" + str(self.left) + ", " + str(self.right) + ", " + str(
-			self.top) + ", " + str(self.bot) + "),\n")
+        for data in range(num_data):
+            hologram_file_name = str(data + 1)
+            print('processing >>>>> ' + str(hologram_file_name))
+            # read from file system
+            hologram = self.hologram[self.left: self.right, self.top: self.bot]
 
-	def set_roi_by_corner(self):
-		print("Currently viewing the whole image, image size is: (" + str(self._shape_x) + ", " + str(
-			self._shape_y) + ")")
-		print("Set ROI by Corner: Click the desired top left and bottom right corner to set ROI coordinates")
-		plt.imshow(self.hologram, cmap='gray')  # 8-bit grey scale
-		roi_x, roi_y = plt.ginput(2)
+            holo_filtered = dhm.utils.fourier_process(hologram, circle_filter)
+            holo_cleared = back_filtered * holo_filtered
+            holo_apd = dhm.utils.apodization_process(holo_cleared, k_factor, self._expansion)
 
-		top = int(roi_x[0])
-		bot = int(roi_y[0])
-		left = int(roi_x[1])
-		right = int(roi_y[1])
+            phase_reconstructed, diffraction_distance, reconstructed, intensity_final = dhm.utils.reconstruction_angular(
+                self, holo_apd, vertical_step, self.vector, self.delta, self._expansion, rec_scale)
 
-		if (top - bot) % 2 != 0:
-			bot = bot - 1
-		if (left - right) % 2 != 0:
-			right = right - 1
+            print('Focus plane of image    is >>>>>' + str(diffraction_distance) + 'um')
+            tf.imwrite(str('./result/' + 'result_Angular_Hann_Intensity_' + str(data) + '.tiff'), reconstructed)
+            tf.imwrite(str('./result/' + 'result_Angular_Hann_Intensity_22' + str(data) + '.tiff'), intensity_final)
 
-		self.top = top
-		self.bot = bot
-		self.left = left
-		self.right = right
-		print("ROI updated to: (left, right, top, bottom)= (" + str(self.left) + ", " + str(self.right) + ", " + str(
-			self.top) + ", " + str(self.bot) + "),\n")
+            unwrapped_phase = dhm.utils.unwrap_phase(0 - phase_reconstructed)
+            height = dhm.utils.background_unit(unwrapped_phase * 3 / self.vector)
 
-	def set_roi_by_param(self, left: int, right: int, top: int, bottom: int) -> int:
-		self.top = top
-		self.bot = bottom
-		self.left = left
-		self.right = right
-		print("ROI set to: (left, right, top, bottom) = (" + str(self.left) + ", " + str(self.right) + ", " + str(
-			self.top) + ", " + str(self.bot) + "),\n")
+            tf.imwrite(str('./result/' + 'result_Height_angle_' + '.tiff'), height)
+            tf.imwrite(str('./result/' + 'result_Height_phase_angle' + '.tiff'), phase_reconstructed)
 
-	def get_roi(self) -> Optional[Tuple[int, int, int, int]]:
-		print("ROI set to: (left, right, top, bottom) = (" + str(self.left) + ", " + str(self.right) + ", " + str(
-			self.top) + ", " + str(self.bot) + "),\n")
-		return self.left, self.right, self.top, self.bot
-
-	def process_roi(self, filter_quadrant: int = 3, num_data: int = 1, k_factor=1.5, vertical_step: int = 2,
-					rec_scale: int = 10):
-		# if (self.get_roi() == [None, None, None, None]):
-		# 	print("ROI not set yet. Please set ROI")
-		# 	self.set_roi_by_corner()
-		self.set_roi_by_corner()
-
-		circle_filter = dhm.interactive.filter_fixed_point(self.hologram[self.left: self.right, self.top: self.bot],
-														   filter_quadrant)
-		back_filtered = dhm.utils.fourier_process(self.background[self.left: self.right, self.top: self.bot],
-												  circle_filter)
-		back_filtered = np.exp(complex(0, 1) * np.angle(np.conj(back_filtered)))
-
-		for data in range(num_data):
-			hologram_file_name = str(data + 1)
-			print('processing >>>>> ' + str(hologram_file_name))
-			# read from file system
-			hologram = self.hologram[self.left: self.right, self.top: self.bot]
-
-			holo_filtered = dhm.utils.fourier_process(hologram, circle_filter)
-			holo_cleared = back_filtered * holo_filtered
-			holo_apd = dhm.utils.apodization_process(holo_cleared, k_factor, self._expansion)
-
-			phase_reconstructed, diffraction_distance, reconstructed, intensity_final = dhm.utils.reconstruction_angular(
-				self, holo_apd, vertical_step, self.vector, self.delta, self._expansion, rec_scale)
-
-			print('Focus plane of image	is >>>>>' + str(diffraction_distance) + 'um')
-			tf.imwrite(str('./result/' + 'result_Angular_Hann_Intensity_' + str(data) + '.tiff'), reconstructed)
-			tf.imwrite(str('./result/' + 'result_Angular_Hann_Intensity_22' + str(data) + '.tiff'), intensity_final)
-
-			unwrapped_phase = dhm.utils.unwrap_phase(0 - phase_reconstructed)
-			height = dhm.utils.background_unit(unwrapped_phase * 3 / self.vector)
-
-			tf.imwrite(str('./result/' + 'result_Height_angle_' + '.tiff'), height)
-			tf.imwrite(str('./result/' + 'result_Height_phase_angle' + '.tiff'), phase_reconstructed)
-
-			self.SHAR = np.squeeze(self.SHAR)
-			tf.imwrite(str('./result/' + 'result_Angular_Hann_shar_' + str(data) + '.tiff'), self.SHAR)
+            self.SHAR = np.squeeze(self.SHAR)
+            tf.imwrite(str('./result/' + 'result_Angular_Hann_shar_' + str(data) + '.tiff'), self.SHAR)
