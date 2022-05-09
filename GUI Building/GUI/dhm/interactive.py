@@ -13,6 +13,7 @@ from typing import Optional, Tuple, List, Any
 
 import dhm.utils
 
+################################# read_local is obsolete , will be removed in the release #####################################
 def read_local(path_name, background_file_name, hologram_file_name):
 
     # def open_file(filepath: str):
@@ -31,6 +32,8 @@ def read_local(path_name, background_file_name, hologram_file_name):
     background_read = np.array(background_read[:, :], dtype=float)
 
     return hologram_raw, background_read
+################################# read_local is obsolete , will be removed in the release #####################################
+
 
 def filter_fixed_point(hologram_raw, quadrant:int):
 
