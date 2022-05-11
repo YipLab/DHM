@@ -9,7 +9,7 @@ from skimage.filters import gaussian
 from skimage.restoration import unwrap_phase  # intall 'Microsoft's vcredist_x64.exe' if it not work 
 # ( https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
-import utils
+import dhm.utils
 
 
 # ================================= read_local is obsolete , will be removed in the release ==========================

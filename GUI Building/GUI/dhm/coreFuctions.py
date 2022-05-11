@@ -19,8 +19,10 @@ from skimage.restoration import unwrap_phase
 # On Windows, install 'Microsoft's vcredist_x64.exe' if it does not work
 # ( https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
-from dhm import interactive
-from dhm import utils
+# from dhm import interactive
+# from dhm import utils
+import dhm.utils
+import dhm.interactive
 from typing import Optional, Tuple, Any
 
 
@@ -251,7 +253,7 @@ class HoloGram:
         self.right = right
         print(f"ROI set to: (left, right, top, bottom)= ({self.left}, {self.right}, {self.top}, {self.bot})")
 
-    def get_roi(self) -> bool | tuple[Any, Any, Any, Any]:
+    def get_roi(self) -> Tuple[Any, Any, Any, Any]:
         if (self.left, self.right, self.top, self.bot) == (None, None, None, None):
             print("ROI not set yet. Please set ROI")
             return False
