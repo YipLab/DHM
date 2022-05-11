@@ -510,7 +510,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox">
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_rate">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -535,7 +535,7 @@
     <double>1.200000000000000</double>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="comboBox_FilterType">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -617,7 +617,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Noise &amp; Background</string>
+    <string>Processing</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -705,7 +705,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon_2">
+  <widget class="QCheckBox" name="checkBox_height">
    <property name="geometry">
     <rect>
      <x>560</x>
@@ -750,8 +750,11 @@
      <height>60</height>
     </size>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon_3">
+  <widget class="QCheckBox" name="checkBox_phase">
    <property name="geometry">
     <rect>
      <x>560</x>
@@ -797,7 +800,7 @@
     </size>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon_4">
+  <widget class="QCheckBox" name="checkBox_wrapped_phase">
    <property name="geometry">
     <rect>
      <x>560</x>
@@ -843,7 +846,7 @@
     </size>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon_5">
+  <widget class="QCheckBox" name="checkBox_refocus_volume">
    <property name="geometry">
     <rect>
      <x>560</x>
@@ -919,7 +922,7 @@
    <property name="geometry">
     <rect>
      <x>260</x>
-     <y>220</y>
+     <y>210</y>
      <width>120</width>
      <height>20</height>
     </rect>
@@ -940,11 +943,11 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_3">
+  <widget class="QComboBox" name="comboBox_leveling">
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>220</y>
+     <y>210</y>
      <width>111</width>
      <height>20</height>
     </rect>
@@ -967,7 +970,7 @@
    <property name="geometry">
     <rect>
      <x>260</x>
-     <y>250</y>
+     <y>240</y>
      <width>120</width>
      <height>20</height>
     </rect>
@@ -988,11 +991,11 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_gaussian_size">
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>250</y>
+     <y>240</y>
      <width>60</width>
      <height>20</height>
     </rect>
@@ -1038,7 +1041,7 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_4">
+  <widget class="QComboBox" name="comboBox_quadrant">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -1116,6 +1119,112 @@
    </property>
    <property name="value">
     <double>100.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_10">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>270</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>Hologram count:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_holo_count">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>270</y>
+     <width>60</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="decimals">
+    <number>0</number>
+   </property>
+   <property name="minimum">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>99999999999.000000000000000</double>
+   </property>
+   <property name="singleStep">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="value">
+    <double>1.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>300</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>Hologram start:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_holo_start">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>300</y>
+     <width>60</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="decimals">
+    <number>0</number>
+   </property>
+   <property name="minimum">
+    <double>0.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>99999999999.000000000000000</double>
+   </property>
+   <property name="singleStep">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="value">
+    <double>0.000000000000000</double>
    </property>
   </widget>
  </widget>

@@ -1,21 +1,12 @@
 #!/usr/bin/env python3
 from PyQt5 import QtWidgets, uic
-import os.path
 import sys
 from tkinter.filedialog import askdirectory
 from dhm import coreFuctions
 # import dhm.interactive
 # import dhm.utils
-import tifffile as tf
-import random
-import numpy as np
-
-from matplotlib.backends.qt_compat import QtCore
-from qt_material import apply_stylesheet
-import qdarkstyle
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
 
@@ -24,14 +15,14 @@ class Launcher(QtWidgets.QMainWindow):
         super(Launcher, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/launcher_window.ui', self)  # Load the .ui file
 
-        self.std_TDHM = TdhmWidgetStd()
+        self.standardTDHM = TDHMWidgetStd()
 
-        self.standard_TDHM.clicked.connect(self.std_TDHM.show)
+        self.standard_TDHM.clicked.connect(self.standardTDHM.show)
 
 
-class TdhmWidgetStd(QtWidgets.QMainWindow):
+class TDHMWidgetStd(QtWidgets.QMainWindow):
     def __init__(self):
-        super(TdhmWidgetStd, self).__init__()  # Call the inherited classes __init__ method
+        super(TDHMWidgetStd, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/std_main.ui', self)  # Load the .ui file
 
         self.img_canvas = FigureCanvas(plt.Figure())
@@ -46,18 +37,30 @@ class TdhmWidgetStd(QtWidgets.QMainWindow):
         self.hologram = None
         self.background = None
 
+        self.pushButton_start.hide()
+        self.checkBox_calibration.hide()
+        self.pushButton_calibration.hide()
+        self.parameter_setting_check()
+
+        # Ui Loading ###################
         self.SysCalibration = SysCalib()
         self.Parameter = ParamSet()
+        self.Background = BackgroundSet()
 
-        self.pushButton_start.hide()
         self.pushButton_calibration.clicked.connect(self.sys_calibration)
         self.pushButton_parameter.clicked.connect(self.parameter_set)
+        self.pushButton_background.clicked.connect(self.background_set)
+
+        # Push Button Connection #############
         self.radioButton_liveimg.toggled.connect(self.live_image_check)
         self.pushButton_read_add.clicked.connect(self.add_read)
         self.pushButton_save_add.clicked.connect(self.add_save)
         self.checkBox_calibration.stateChanged.connect(self.sop_check)
         self.checkBox_parameter.stateChanged.connect(self.sop_check)
+        self.checkBox_background.stateChanged.connect(self.sop_check)
+        self.pushButton_refresh.clicked.connect(self.parameter_setting_check)
 
+        # Main Function Start ##############
         self.pushButton_start.clicked.connect(self.start)
 
         self.image_figure = self.img_canvas.figure.subplots()
@@ -65,15 +68,24 @@ class TdhmWidgetStd(QtWidgets.QMainWindow):
         self.num = 1
 
     def start(self):
+
         DHM_core.set_read_path(read_path=self.lineEdit_read_add.text())
         DHM_core.set_background_img(bgd_file_name=str(self.num))
-        self.image_figure.imshow(DHM_core.BACKGROUND, cmap='gist_gray')
+
+        self.image_show(DHM_core.BACKGROUND)
+
+    def image_show(self, img_name):
+        self.image_figure.imshow(img_name, cmap='gist_gray')
         self.img_canvas.draw()
         self.num += 1
 
     def sop_check(self):
-        if self.checkBox_parameter.isChecked():
+        if self.checkBox_parameter.isChecked() and self.checkBox_background.isChecked():
             if self.checkBox_calibration.isChecked():
+                self.textBrowser_info_show.setText("Click the 'Next Frame' button to show the next result frame")
+                self.pushButton_start.show()
+            elif not self.radioButton_liveimg.isChecked():
+                self.textBrowser_info_show.setText('Click the "START" button to start calculation... ')
                 self.pushButton_start.show()
             else:
                 self.pushButton_start.hide()
@@ -88,17 +100,69 @@ class TdhmWidgetStd(QtWidgets.QMainWindow):
         self.Parameter.show()
         self.checkBox_parameter.setChecked(True)
 
+    def background_set(self):
+        self.Background.show()
+        self.checkBox_background.setChecked(True)
+
     def add_read(self):
         self.read_path = askdirectory()
         self.lineEdit_read_add.setText(self.read_path + '/')
+        DHM_core.set_read_path(read_path=self.lineEdit_read_add.text())
 
     def add_save(self):
         self.save_path = askdirectory()
         self.lineEdit_save_add.setText(self.save_path + '/')
+        DHM_core.set_save_path(save_path=str(self.lineEdit_save_add.text()))
+
+    def parameter_setting_check(self):
+        # Configure Parameters ##############
+        self.label_pixel.setText(str('%.2f' % DHM_core.pixel_x_main) + 'um')
+        self.label_RI.setText(str('%.2f' % DHM_core.refractive_index_main))
+        self.label_mag.setText(str('%.0f' % DHM_core.magnification_main) + 'X')
+        self.label_wavelenth.setText(str('%.0f' % (DHM_core.wavelength_main * 1000)) + 'nm')
+
+        # Reconstruction Parameters ###############
+        self.label_sharpness.setText(str(DHM_core.detect_method_main))
+        if DHM_core.recon_enable_main:
+            self.label_enable.setText(str(DHM_core.recon_enable_main))
+            self.label_start.setText(str(DHM_core.rec_start_main))
+            self.label_end.setText(str(DHM_core.rec_end_main))
+            self.label_step.setText(str(DHM_core.rec_step_main))
+        else:
+            self.label_enable.setText(str(DHM_core.recon_enable_main))
+            self.label_start.setHidden(True)
+            self.label_end.setHidden(True)
+            self.label_step.setHidden(True)
+
+        # Process Setting ###############
+        self.label_leveling.setText(str(DHM_core.leveling_method_main))
+        self.label_holo_total.setText(str(DHM_core.holo_total_main))
+        self.label_holo_strat.setText(str(DHM_core.holo_start_main))
+        if DHM_core.leveling_method_main == "Gaussian Blur":
+            self.label_Gaussian_size.setHidden(False)
+            self.label_GB_size.setHidden(False)
+            self.label_Gaussian_size.setText(str(DHM_core.gaussian_size_main))
+        else:
+            self.label_Gaussian_size.setHidden(True)
+            self.label_GB_size.setHidden(True)
+
+        # FFT Filter Setting
+        self.label_FFT_filter.setText(DHM_core.filter_type_main)
+        self.label_filter_rate.setText(str(DHM_core.filter_rate_main))
+        self.label_quadrant.setText(str(DHM_core.filter_quadrant_main))
+        self.label_expansion.setText(str(DHM_core.expansion_main))
+
+        # What to Save
+        self.label_Height.setText(str(DHM_core.height_map_main))
+        self.label_Phase.setText(str(DHM_core.phase_map_main))
+        self.label_Wrapped_phase.setText(str(DHM_core.wrapped_phase_main))
+        self.label_refocused_volume.setText(str(DHM_core.refocused_volume_main))
 
     def live_image_check(self):
         if self.radioButton_liveimg.isChecked():
             self.pushButton_read_add.hide()
+            self.checkBox_calibration.show()
+            self.pushButton_calibration.show()
             self.label_read_add.hide()
             self.lineEdit_read_add.hide()
             self.pushButton_start.setText('Next Frame')
@@ -106,7 +170,78 @@ class TdhmWidgetStd(QtWidgets.QMainWindow):
             self.pushButton_read_add.show()
             self.label_read_add.show()
             self.lineEdit_read_add.show()
+            self.checkBox_calibration.hide()
+            self.pushButton_calibration.hide()
             self.pushButton_start.setText('Start')
+        self.sop_check()
+
+
+class BackgroundSet(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(BackgroundSet, self).__init__()  # Call the inherited classes __init__ method
+        uic.loadUi('./ui_files/background_set_dialog.ui', self)  # Load the .ui file
+
+        self.background_save_address = None
+        self.background_read_address = None
+
+        self.img_canvas_back = FigureCanvas(plt.Figure())
+        self.img_canvas_back.minimumWidth = 800
+        self.img_canvas_back.minimumHeight = 600
+        self.Layout_tool.addWidget(NavigationToolbar(self.img_canvas_back, self))
+
+        self.Layout_frame.addWidget(self.img_canvas_back)
+        self.image_figure_back = self.img_canvas_back.figure.subplots()
+
+        self.background_method()
+        self.comboBox_background_method.currentTextChanged.connect(self.background_method)
+        self.pushButton_cam_save.clicked.connect(self.background_save)
+        self.pushButton_local_read.clicked.connect(self.background_read)
+        self.pushButton_confirm.clicked.connect(self.back_confirm)
+        self.pushButton_cancel.clicked.connect(self.back_cancel)
+
+    def back_confirm(self):
+        DHM_core.set_roi_para(roi_enable=self.checkBox_ROI_set.isChecked)
+        self.close()
+
+    def back_cancel(self):
+        self.close()
+
+    def background_save(self):
+        self.background_save_address = askdirectory()
+        self.lineEdit_cam_save.setText(self.background_save_address + '/')
+
+    def background_read(self):
+        self.background_read_address = askdirectory()
+        self.lineEdit_local_read.setText(self.background_read_address + '/')
+        DHM_core.set_background_img(read_path_back=self.lineEdit_local_read.text(),
+                                    bgd_file_name=self.lineEdit_back_filename.text())
+        self.image_figure_back.imshow(DHM_core.BACKGROUND, cmap='gist_gray')
+        self.img_canvas_back.draw()
+        self.Note.setText(f"Background is set, resolution is ({DHM_core.shape_x_main},{DHM_core.shape_y_main})")
+
+    def background_method(self):
+        if self.comboBox_background_method.currentText() == "Local":
+            self.label_cam_back.setHidden(True)
+            self.label_cam_save.setHidden(True)
+            self.lineEdit_cam_save.hide()
+            self.pushButton_cam_save.hide()
+            self.pushButton_cam_open.hide()
+            self.pushButton_cam_save_back.hide()
+            self.label_local.setHidden(False)
+            self.label_local_read.setHidden(False)
+            self.lineEdit_local_read.show()
+            self.pushButton_local_read.show()
+        else:
+            self.label_cam_back.setHidden(False)
+            self.label_cam_save.setHidden(False)
+            self.lineEdit_cam_save.show()
+            self.pushButton_cam_save.show()
+            self.pushButton_cam_open.show()
+            self.pushButton_cam_save_back.show()
+            self.label_local.setHidden(True)
+            self.label_local_read.setHidden(True)
+            self.lineEdit_local_read.hide()
+            self.pushButton_local_read.hide()
 
 
 class SysCalib(QtWidgets.QDialog):
@@ -129,36 +264,44 @@ class ParamSet(QtWidgets.QDialog):
                                refractive_index=self.refractive_index.value(),
                                magnification=self.magnification.value(),
                                wavelength=self.wave_length.value())
-        DHM_core.set_expansion(expansion=self.expansion.value())
+
+        DHM_core.set_filter_para(expansion=self.expansion.value(),
+                                 filter_type=self.comboBox_FilterType.currentText(),
+                                 filter_rate=self.doubleSpinBox_rate.value(),
+                                 filter_quadrant=self.comboBox_quadrant.currentText())
+
         DHM_core.set_recon_param(recon_enable=self.checkBox_recon.isChecked(),
                                  rec_start=self.SpinBox_start_recon.value(),
                                  rec_end=self.SpinBox_end_recon.value(),
                                  rec_step=self.SpinBox_step_recon.value(),
                                  detect_method=self.detected_method.currentText())
 
+        DHM_core.set_what_to_save(height_map=self.checkBox_height.isChecked(),
+                                  phase_map=self.checkBox_phase.isChecked(),
+                                  wrapped_phase=self.checkBox_wrapped_phase.isChecked(),
+                                  refocused_volume=self.checkBox_refocus_volume.isChecked())
+
+        DHM_core.set_processing_para(leveling_method=self.comboBox_leveling.currentText(),
+                                     gaussian_size=self.doubleSpinBox_gaussian_size.value(),
+                                     holo_count=self.doubleSpinBox_holo_count.value(),
+                                     holo_start=self.doubleSpinBox_holo_start.value())
         self.close()
 
     def param_set_cancel(self):
         self.close()
 
 
-# def TDHM_loop():
-# code here...
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)  # Create an instance of QtWidgets.QApplication
     # apply_stylesheet(app, theme='dark_teal.xml')
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
-    File = open('./ui_files/styles/Yiplab.qss', 'r')
+    File = open('./ui_files/styles/Yip_lab.qss', 'r')
     with File:
         qss_style = File.read()
         app.setStyleSheet(qss_style)
 
     DHM_core = coreFuctions.HoloGram()
-
-    # image_show = tf.imread('./ui_files/icons' + '/0.tiff')
-    # image_show = np.array(image_show[:, :], dtype=float)
 
     launcher = Launcher()  # Create an instance of our class
     launcher.show()
