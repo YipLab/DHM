@@ -35,7 +35,7 @@
         <height>16777215</height>
        </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,4,2,2,2">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,0,4,2,0,2">
        <item>
         <layout class="QVBoxLayout" name="Label">
          <item>
@@ -72,6 +72,34 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QTextBrowser" name="instruction">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+background-color: rgb(213, 213, 213);
+color: rgb(255, 0, 4);</string>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial Black'; font-size:12pt; font-weight:80; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Instructions:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="Setting" stretch="1,50">
@@ -173,7 +201,7 @@ font: 87 13pt &quot;Arial Black&quot;;</string>
               <item>
                <widget class="QRadioButton" name="radioButton_liveimg">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -220,118 +248,39 @@ font: 87 13pt &quot;Arial Black&quot;;</string>
                 <property name="verticalSpacing">
                  <number>30</number>
                 </property>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="checkBox_parameter">
-                  <property name="enabled">
-                   <bool>true</bool>
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="pushButton_parameter">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>50</height>
+                   </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>160</width>
-                    <height>36</height>
+                    <width>150</width>
+                    <height>50</height>
                    </size>
                   </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
                   <property name="styleSheet">
-                   <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);
-</string>
-                  </property>
-                  <property name="locale">
-                   <locale language="English" country="Canada"/>
+                   <string notr="true">color: rgb(255, 255, 255);
+font: 87 10pt &quot;Arial Black&quot;;
+background-color: rgb(255, 0, 0);</string>
                   </property>
                   <property name="text">
                    <string>Parameter
 Setting</string>
                   </property>
-                  <property name="checkable">
-                   <bool>true</bool>
-                  </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QPushButton" name="pushButton_calibration">
+                 <widget class="QLabel" name="label_parameter">
                   <property name="minimumSize">
                    <size>
-                    <width>70</width>
+                    <width>50</width>
                     <height>0</height>
                    </size>
                   </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
-font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(255, 0, 0);</string>
-                  </property>
-                  <property name="text">
-                   <string>Start</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QPushButton" name="pushButton_parameter">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
-font: 87 10pt &quot;Arial Black&quot;;
-background-color: rgb(255, 0, 0);</string>
-                  </property>
-                  <property name="text">
-                   <string>Start</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QCheckBox" name="checkBox_calibration">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>160</width>
-                    <height>36</height>
-                   </size>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);
-</string>
-                  </property>
-                  <property name="locale">
-                   <locale language="English" country="Canada"/>
-                  </property>
-                  <property name="text">
-                   <string>System
-Calibration</string>
-                  </property>
-                  <property name="checkable">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QCheckBox" name="checkBox_background">
                   <property name="font">
                    <font>
                     <family>Arial Black</family>
@@ -340,27 +289,23 @@ Calibration</string>
                     <bold>true</bold>
                    </font>
                   </property>
-                  <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);</string>
-                  </property>
                   <property name="text">
-                   <string>Background&amp;
-ROI Setting</string>
+                   <string>None</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="3" column="0">
                  <widget class="QPushButton" name="pushButton_background">
                   <property name="minimumSize">
                    <size>
-                    <width>70</width>
-                    <height>0</height>
+                    <width>120</width>
+                    <height>60</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>100</width>
-                    <height>60</height>
+                    <width>50</width>
+                    <height>50</height>
                    </size>
                   </property>
                   <property name="font">
@@ -378,7 +323,75 @@ font: 87 10pt &quot;Arial Black&quot;;
 background-color: rgb(255, 0, 0);</string>
                   </property>
                   <property name="text">
-                   <string>Start</string>
+                   <string>Background&amp;
+ROI Setting</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="label_background">
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Arial Black</family>
+                    <pointsize>10</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>None</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QPushButton" name="pushButton_calibration">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(255, 255, 255);
+font: 87 10pt &quot;Arial Black&quot;;
+background-color: rgb(255, 0, 0);</string>
+                  </property>
+                  <property name="text">
+                   <string>Camera
+Calibration</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="label_calibration">
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Arial Black</family>
+                    <pointsize>10</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>None</string>
                   </property>
                  </widget>
                 </item>
@@ -487,8 +500,8 @@ font: 87 13pt &quot;Arial Black&quot;;</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-203</y>
-                <width>246</width>
+                <y>-263</y>
+                <width>257</width>
                 <height>544</height>
                </rect>
               </property>
@@ -1093,53 +1106,6 @@ font: 87 9pt &quot;Arial Black&quot;;</string>
        <item>
         <layout class="QVBoxLayout" name="Adress">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>40</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">font: 87 10pt &quot;Arial Black&quot;;</string>
-             </property>
-             <property name="text">
-              <string>Save Image</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_11">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>40</height>
-              </size>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">
-font: 87 10pt &quot;Arial Black&quot;;
-</string>
-             </property>
-             <property name="text">
-              <string>Filter Check</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,6,1">
            <property name="spacing">
             <number>2</number>
@@ -1186,7 +1152,7 @@ font: 87 10pt &quot;Arial Black&quot;;
               </size>
              </property>
              <property name="text">
-              <string>//192.168.181.230/Store/Jin_Lie/Data of off-axis DHM/20220504_Thaisa_calibration/Data/</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -1200,7 +1166,7 @@ font: 87 10pt &quot;Arial Black&quot;;
              </property>
              <property name="maximumSize">
               <size>
-               <width>56</width>
+               <width>100</width>
                <height>30</height>
               </size>
              </property>
@@ -1210,7 +1176,7 @@ font: 87 10pt &quot;Arial Black&quot;;
 background-color: rgb(255, 0, 0);</string>
              </property>
              <property name="text">
-              <string>...</string>
+              <string>Open</string>
              </property>
             </widget>
            </item>
@@ -1234,7 +1200,7 @@ background-color: rgb(255, 0, 0);</string>
             <number>1</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_69">
+            <widget class="QLabel" name="label_save_add">
              <property name="font">
               <font>
                <family>Arial Black</family>
@@ -1274,19 +1240,67 @@ background-color: rgb(255, 0, 0);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>56</width>
+               <width>100</width>
                <height>30</height>
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true"/>
+              <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+</string>
              </property>
              <property name="text">
-              <string>...</string>
+              <string>Open</string>
              </property>
             </widget>
            </item>
           </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QPushButton" name="pushButton">
+           <property name="maximumSize">
+            <size>
+             <width>160</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 87 10pt &quot;Arial Black&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Save Image</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>160</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+font: 87 10pt &quot;Arial Black&quot;;
+</string>
+           </property>
+           <property name="text">
+            <string>Filter Check</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -1304,7 +1318,9 @@ background-color: rgb(255, 0, 0);</string>
             <bool>false</bool>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 87 20pt &quot;Arial Black&quot;;
+            <string notr="true">color: rgb(255, 255, 255);
+font: 87 20pt &quot;Arial Black&quot;;
+background-color: rgb(255, 0, 0);
 </string>
            </property>
            <property name="text">
@@ -1335,37 +1351,11 @@ font: 87 20pt &quot;Arial Black&quot;;
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="Progress" stretch="1,6">
-         <item>
-          <widget class="QLabel" name="label_66">
-           <property name="font">
-            <font>
-             <family>Arial Black</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Task Progress:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar">
-           <property name="value">
-            <number>24</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="Figure" stretch="1,20,3">
+     <layout class="QVBoxLayout" name="Figure" stretch="1,20,0,3">
       <property name="leftMargin">
        <number>6</number>
       </property>
@@ -1383,6 +1373,32 @@ font: 87 20pt &quot;Arial Black&quot;;
       </item>
       <item>
        <layout class="QVBoxLayout" name="figure_layout"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="Progress" stretch="1,6">
+        <item>
+         <widget class="QLabel" name="label_66">
+          <property name="font">
+           <font>
+            <family>Arial Black</family>
+            <pointsize>10</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Task Progress:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QTextBrowser" name="textBrowser_info_show">

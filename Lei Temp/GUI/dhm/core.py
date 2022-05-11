@@ -115,15 +115,15 @@ class HoloGram:
         self.top = None
         self.bot = None
 
-    def set_background_img(self, read_path_back: str = '', bgd_file_name: str = 'ref'):
-        if os.path.isfile(read_path_back + bgd_file_name):
-            self.BACKGROUND = np.array(plt.imread(read_path_back + bgd_file_name)[:, :], dtype=float)
+    def set_background_img(self, read_path_back: str = ''):
+        if os.path.isfile(read_path_back):
+            self.BACKGROUND = np.array(plt.imread(read_path_back)[:, :], dtype=float)
             self.shape_x_main = self.BACKGROUND.shape[0]
             self.shape_y_main = self.BACKGROUND.shape[1]
             print(f"Background is set, resolution is ({self.shape_x_main},{self.shape_y_main})")
         else:
             # How to show this in the GUI ???? ###############################################
-            print(str(read_path_back + bgd_file_name + '.tiff'))
+            print(str(read_path_back))
             print("Please type in a correct address!")
 
     def add_hologram_img(self, holo_file_name):
@@ -288,12 +288,10 @@ class HoloGram:
 
     def filter_background_process(self):
         if not self.ROI_enable:
-            print("filter processing")
             self.Order_Filter = self.filter_fixed_point(hologram_raw=self.HOLOGRAM,
                                                         quadrant=self.filter_quadrant_main,
                                                         filter_rate=self.filter_rate_main,
                                                         filter_type=self.filter_type_main)
-            print('background processing')
             background_filtered = self.fourier_process(self.BACKGROUND, self.Order_Filter)
             self.Processed_Background = np.exp(complex(0, 1) * np.angle(np.conj(background_filtered)))
 
@@ -301,12 +299,9 @@ class HoloGram:
             print("Will do the ROI")
 
     def hologram_process(self):
-        print("hologram Fourier processing")
         reconstructed_map = None
         hologram = self.fourier_process(self.HOLOGRAM, self.Order_Filter)
-        print("hologram clean processing")
         hologram = hologram * self.Processed_Background
-        print("hologram processed")
         if self.recon_enable_main:
             print("will do the reconstruction")
         else:
@@ -369,18 +364,13 @@ class HoloGram:
         circle_window = np.array(region <= radius)
         if filter_type == "Hann":
             filter_hann = self.hanning_filter(shape_vertical, shape_horizontal, center_x, center_y, radius)
-            print('circel_window', np.shape(circle_window))
-            print('filter_hann', np.shape(filter_hann))
             circle_window = circle_window * filter_hann
-            print("hann finished")
         return circle_window
 
     # ======================= utils =================================================================#
     def hanning_filter(self, m_x, n_y, c_x, c_y, r):
-        print(m_x, n_y, c_x, c_y, r)
         hann = np.sqrt(np.outer(np.hanning(r * 2), np.hanning(r * 2)))
         hann = np.pad(hann, ((int(c_x - r), int(m_x - c_x - r)), (int(c_y - r), int(n_y - c_y - r))), 'constant')
-        print(np.shape(hann))
         return hann
 
     def fourier_process(self, img_pre, filter_pre):

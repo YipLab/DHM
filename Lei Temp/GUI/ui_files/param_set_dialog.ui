@@ -29,7 +29,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon">
+  <widget class="QCheckBox" name="checkBox_recon_enable">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -623,7 +623,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_step_recon_2">
+  <widget class="QLabel" name="label_sharp_detect">
    <property name="geometry">
     <rect>
      <x>390</x>
