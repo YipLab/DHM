@@ -2,9 +2,7 @@
 from PyQt5 import QtWidgets, uic
 import sys
 from tkinter.filedialog import askdirectory
-from dhm import coreFuctions
-# import dhm.interactive
-# import dhm.utils
+import dhm.core
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
@@ -69,10 +67,23 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
 
     def start(self):
 
-        DHM_core.set_read_path(read_path=self.lineEdit_read_add.text())
-        DHM_core.set_background_img(bgd_file_name=str(self.num))
+        # DHM.set_read_path(read_path=self.lineEdit_read_add.text())
+        DHM.set_read_path(read_path='../../Example Images/')
+        DHM.set_background_img(read_path_back = '../../Example Images/', bgd_file_name='reference_background')
 
-        self.image_show(DHM_core.BACKGROUND)
+        DHM.add_hologram_img('tdhm_hologram')
+        DHM.filter_background_process()
+        DHM.hologram_process()
+        
+        # save
+        self.image_show(DHM.HEIGHT_MAP)
+        # self.image_show(DHM.PHASE_MAP)
+        # self.image_show(DHM.WRAPPED_PHASE)
+
+        DHM.set_what_to_save(height_map = True, phase_map = True, wrapped_phase = True, refocused_volume = False)
+
+        # DHM.save_results(self.num)
+        # self.Note.addText("Done Saving!")
 
     def image_show(self, img_name):
         self.image_figure.imshow(img_name, cmap='gist_gray')
@@ -107,56 +118,56 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
     def add_read(self):
         self.read_path = askdirectory()
         self.lineEdit_read_add.setText(self.read_path + '/')
-        DHM_core.set_read_path(read_path=self.lineEdit_read_add.text())
+        DHM.set_read_path(read_path=self.lineEdit_read_add.text())
 
     def add_save(self):
         self.save_path = askdirectory()
         self.lineEdit_save_add.setText(self.save_path + '/')
-        DHM_core.set_save_path(save_path=str(self.lineEdit_save_add.text()))
+        DHM.set_save_path(save_path=str(self.lineEdit_save_add.text()))
 
     def parameter_setting_check(self):
         # Configure Parameters ##############
-        self.label_pixel.setText(str('%.2f' % DHM_core.pixel_x_main) + 'um')
-        self.label_RI.setText(str('%.2f' % DHM_core.refractive_index_main))
-        self.label_mag.setText(str('%.0f' % DHM_core.magnification_main) + 'X')
-        self.label_wavelenth.setText(str('%.0f' % (DHM_core.wavelength_main * 1000)) + 'nm')
+        self.label_pixel.setText(str('%.2f' % DHM.pixel_x_main) + 'um')
+        self.label_RI.setText(str('%.2f' % DHM.refractive_index_main))
+        self.label_mag.setText(str('%.0f' % DHM.magnification_main) + 'x')
+        self.label_wavelenth.setText(str('%.0f' % (DHM.wavelength_main * 1000)) + 'nm')
 
         # Reconstruction Parameters ###############
-        self.label_sharpness.setText(str(DHM_core.detect_method_main))
-        if DHM_core.recon_enable_main:
-            self.label_enable.setText(str(DHM_core.recon_enable_main))
-            self.label_start.setText(str(DHM_core.rec_start_main))
-            self.label_end.setText(str(DHM_core.rec_end_main))
-            self.label_step.setText(str(DHM_core.rec_step_main))
+        self.label_sharpness.setText(str(DHM.detect_method_main))
+        if DHM.recon_enable_main:
+            self.label_enable.setText(str(DHM.recon_enable_main))
+            self.label_start.setText(str(DHM.rec_start_main))
+            self.label_end.setText(str(DHM.rec_end_main))
+            self.label_step.setText(str(DHM.rec_step_main))
         else:
-            self.label_enable.setText(str(DHM_core.recon_enable_main))
+            self.label_enable.setText(str(DHM.recon_enable_main))
             self.label_start.setHidden(True)
             self.label_end.setHidden(True)
             self.label_step.setHidden(True)
 
         # Process Setting ###############
-        self.label_leveling.setText(str(DHM_core.leveling_method_main))
-        self.label_holo_total.setText(str(DHM_core.holo_total_main))
-        self.label_holo_strat.setText(str(DHM_core.holo_start_main))
-        if DHM_core.leveling_method_main == "Gaussian Blur":
+        self.label_leveling.setText(str(DHM.leveling_method_main))
+        self.label_holo_total.setText(str(DHM.holo_total_main))
+        self.label_holo_strat.setText(str(DHM.holo_start_main))
+        if DHM.leveling_method_main == "Gaussian Blur":
             self.label_Gaussian_size.setHidden(False)
             self.label_GB_size.setHidden(False)
-            self.label_Gaussian_size.setText(str(DHM_core.gaussian_size_main))
+            self.label_Gaussian_size.setText(str(DHM.gaussian_size_main))
         else:
             self.label_Gaussian_size.setHidden(True)
             self.label_GB_size.setHidden(True)
 
         # FFT Filter Setting
-        self.label_FFT_filter.setText(DHM_core.filter_type_main)
-        self.label_filter_rate.setText(str(DHM_core.filter_rate_main))
-        self.label_quadrant.setText(str(DHM_core.filter_quadrant_main))
-        self.label_expansion.setText(str(DHM_core.expansion_main))
+        self.label_FFT_filter.setText(DHM.filter_type_main)
+        self.label_filter_rate.setText(str(DHM.filter_rate_main))
+        self.label_quadrant.setText(str(DHM.filter_quadrant_main))
+        self.label_expansion.setText(str(DHM.expansion_main))
 
         # What to Save
-        self.label_Height.setText(str(DHM_core.height_map_main))
-        self.label_Phase.setText(str(DHM_core.phase_map_main))
-        self.label_Wrapped_phase.setText(str(DHM_core.wrapped_phase_main))
-        self.label_refocused_volume.setText(str(DHM_core.refocused_volume_main))
+        self.label_Height.setText(str(DHM.height_map_main))
+        self.label_Phase.setText(str(DHM.phase_map_main))
+        self.label_Wrapped_phase.setText(str(DHM.wrapped_phase_main))
+        self.label_refocused_volume.setText(str(DHM.refocused_volume_main))
 
     def live_image_check(self):
         if self.radioButton_liveimg.isChecked():
@@ -200,7 +211,7 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.pushButton_cancel.clicked.connect(self.back_cancel)
 
     def back_confirm(self):
-        DHM_core.set_roi_para(roi_enable=self.checkBox_ROI_set.isChecked)
+        DHM.set_roi_para(roi_enable=self.checkBox_ROI_set.isChecked)
         self.close()
 
     def back_cancel(self):
@@ -213,11 +224,11 @@ class BackgroundSet(QtWidgets.QMainWindow):
     def background_read(self):
         self.background_read_address = askdirectory()
         self.lineEdit_local_read.setText(self.background_read_address + '/')
-        DHM_core.set_background_img(read_path_back=self.lineEdit_local_read.text(),
+        DHM.set_background_img(read_path_back=self.lineEdit_local_read.text(),
                                     bgd_file_name=self.lineEdit_back_filename.text())
-        self.image_figure_back.imshow(DHM_core.BACKGROUND, cmap='gist_gray')
+        self.image_figure_back.imshow(DHM.BACKGROUND, cmap='gist_gray')
         self.img_canvas_back.draw()
-        self.Note.setText(f"Background is set, resolution is ({DHM_core.shape_x_main},{DHM_core.shape_y_main})")
+        self.Note.setText(f"Background is set, resolution is ({DHM.shape_x_main},{DHM.shape_y_main})")
 
     def background_method(self):
         if self.comboBox_background_method.currentText() == "Local":
@@ -259,29 +270,29 @@ class ParamSet(QtWidgets.QDialog):
         self.pushButton_cancel.clicked.connect(self.param_set_cancel)
 
     def param_set_confirm(self):
-        DHM_core.set_sys_param(pixel_x=self.pixel_size.value(),
+        DHM.set_sys_param(pixel_x=self.pixel_size.value(),
                                pixel_y=self.pixel_size.value(),
                                refractive_index=self.refractive_index.value(),
                                magnification=self.magnification.value(),
                                wavelength=self.wave_length.value())
 
-        DHM_core.set_filter_para(expansion=self.expansion.value(),
+        DHM.set_filter_para(expansion=self.expansion.value(),
                                  filter_type=self.comboBox_FilterType.currentText(),
                                  filter_rate=self.doubleSpinBox_rate.value(),
                                  filter_quadrant=self.comboBox_quadrant.currentText())
 
-        DHM_core.set_recon_param(recon_enable=self.checkBox_recon.isChecked(),
+        DHM.set_recon_param(recon_enable=self.checkBox_recon.isChecked(),
                                  rec_start=self.SpinBox_start_recon.value(),
                                  rec_end=self.SpinBox_end_recon.value(),
                                  rec_step=self.SpinBox_step_recon.value(),
                                  detect_method=self.detected_method.currentText())
 
-        DHM_core.set_what_to_save(height_map=self.checkBox_height.isChecked(),
+        DHM.set_what_to_save(height_map=self.checkBox_height.isChecked(),
                                   phase_map=self.checkBox_phase.isChecked(),
                                   wrapped_phase=self.checkBox_wrapped_phase.isChecked(),
                                   refocused_volume=self.checkBox_refocus_volume.isChecked())
 
-        DHM_core.set_processing_para(leveling_method=self.comboBox_leveling.currentText(),
+        DHM.set_processing_para(leveling_method=self.comboBox_leveling.currentText(),
                                      gaussian_size=self.doubleSpinBox_gaussian_size.value(),
                                      holo_count=self.doubleSpinBox_holo_count.value(),
                                      holo_start=self.doubleSpinBox_holo_start.value())
@@ -301,7 +312,9 @@ if __name__ == '__main__':
         qss_style = File.read()
         app.setStyleSheet(qss_style)
 
-    DHM_core = coreFuctions.HoloGram()
+    DHM = dhm.core.HoloGram()
+    # DHM.set_read_path("../../Example Images/")
+    DHM.set_save_path("./result/")
 
     launcher = Launcher()  # Create an instance of our class
     launcher.show()
