@@ -1,0 +1,95 @@
+from pycromanager import Bridge
+import numpy as np
+from tkinter.filedialog import askdirectory
+import matplotlib.pyplot as plt
+import cv2
+import math
+from IPython.display import clear_output
+from skimage import exposure
+import tifffile as tif
+
+core = Bridge().get_core()
+print(core)
+
+
+def image_obtain():
+    core.snap_image()
+    height = core.get_image_height()
+    width = core.get_image_width()
+    image = core.get_image().reshape(height, width)
+    image = exposure.adjust_gamma(image, gamma=1.6)
+    # image = np.reshape(tagged_image.pix, newshape=[tagged_image.tags["Height"], tagged_image.tags["Width"]], )
+    # image_array = image.astype("float")
+    return image
+
+
+def roi_setting(img1=None):
+    plt.imshow(img1, cmap='gray')  # 8-bit grey scale
+    roi_x, roi_y = plt.ginput(2)
+
+    top_roi = int(roi_x[0])
+    bot_roi = int(roi_y[0])
+    left_roi = int(roi_x[1])
+    right_roi = int(roi_y[1])
+
+    if (top_roi - bot_roi) % 2 != 0:
+        bot_roi = bot_roi - 1
+    if (left_roi - right_roi) % 2 != 0:
+        right_roi = right_roi - 1
+
+    img1 = img1[left_roi: right_roi, top_roi: bot_roi]
+
+    plt.imshow(img1, cmap='gray')
+    plt.ginput(1)
+    return img1, top_roi, bot_roi, left_roi, right_roi
+
+
+def roi_apply(img, top_apl, bot_apl, left_apl, right_apl):
+    img_out = img[left_apl: right_apl, top_apl: bot_apl]
+    return img_out
+
+
+def fourier_trans(img):
+    img = np.float32(img)
+    frequency = np.fft.fftshift(np.fft.fft2(img))
+    spectrum = np.log(1 + np.abs(frequency)) / 26
+
+    m, n = np.shape(spectrum)
+    first_quadrant = spectrum[1: int(math.floor(m / 2) - 50), int(math.floor(n / 2) + 50): n]
+    indices = np.where(first_quadrant == np.amax(first_quadrant))
+    print('Position of the first order: ', str(indices[0]), ',', str(indices[1] + int(math.floor(n / 2) + 50)))
+    print('Value of the first order is: ', np.amax(np.abs(first_quadrant)))
+
+    fringe_x = np.square((indices[0] - (m / 2)) / m)
+    fringe_y = np.square(((n / 2) - (indices[1] + int(math.floor(n) / 2 + 50))) / n)
+    fringe_size = 1 / np.sqrt(fringe_x + fringe_y)
+    print('The fringe size is: ', fringe_size)
+
+    cv2.namedWindow('FFT', flags=cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
+    cv2.imshow('FFT', spectrum)
+    return frequency
+
+
+if __name__ == "__main__":
+    image_raw = image_obtain()
+    hologram, top, bot, left, right = roi_setting(image_raw)
+
+    while 1:
+        clear_output(wait=True)
+        hologram_raw = image_obtain()
+        cv2.namedWindow('frame', flags=cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO | cv2.WINDOW_GUI_EXPANDED)
+        cv2.imshow('frame', hologram_raw)
+
+        hologram = roi_apply(hologram_raw, top, bot, left, right)
+        fft_spectrum = fourier_trans(hologram)
+        core.clear_circular_buffer()
+
+        key = cv2.waitKey(1)
+        if key == (ord('q') or ord('Q')):
+            print('Done')
+            core.clear_circular_buffer()
+            break
+        if key == (ord('r') or ord(R'')):
+            path = askdirectory()
+            tif.imwrite(str(path + '/holo.tiff'), hologram_raw)
+
