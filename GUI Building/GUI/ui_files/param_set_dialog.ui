@@ -29,7 +29,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_recon">
+  <widget class="QCheckBox" name="checkBox_recon_enable">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -532,7 +532,7 @@
     <double>0.100000000000000</double>
    </property>
    <property name="value">
-    <double>1.200000000000000</double>
+    <double>1.000000000000000</double>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox_FilterType">
@@ -546,12 +546,12 @@
    </property>
    <item>
     <property name="text">
-     <string>Hann</string>
+     <string>Flat</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Flat</string>
+     <string>Hann</string>
     </property>
    </item>
   </widget>
@@ -623,7 +623,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_step_recon_2">
+  <widget class="QLabel" name="label_sharp_detect">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -709,7 +709,7 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>220</y>
+     <y>240</y>
      <width>181</width>
      <height>20</height>
     </rect>
@@ -758,7 +758,7 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>240</y>
+     <y>260</y>
      <width>181</width>
      <height>20</height>
     </rect>
@@ -804,7 +804,7 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>260</y>
+     <y>280</y>
      <width>181</width>
      <height>20</height>
     </rect>
@@ -850,7 +850,7 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>280</y>
+     <y>300</y>
      <width>181</width>
      <height>20</height>
     </rect>
@@ -1225,6 +1225,55 @@
    </property>
    <property name="value">
     <double>0.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_auto_save">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>210</y>
+     <width>181</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizeIncrement">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="baseSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 10pt &quot;Arial&quot;;</string>
+   </property>
+   <property name="locale">
+    <locale language="English" country="Canada"/>
+   </property>
+   <property name="text">
+    <string>Auto Save Images</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>60</width>
+     <height>60</height>
+    </size>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

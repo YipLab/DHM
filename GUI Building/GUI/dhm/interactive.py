@@ -112,3 +112,5 @@ def filter_manual_point(hologram_raw, indices):
     plt.ginput(1)
 
     return circle_window
+
+self.comboBox_FilterType.currentText()
