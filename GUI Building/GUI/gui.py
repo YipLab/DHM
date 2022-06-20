@@ -74,7 +74,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         # TODO: the textBrowser is not showing correctly...
 
         self.textBrowser_info_show.setText('Hologram Reading ... ')
-        DHM.add_hologram_img('1')
+        DHM.add_hologram_img(DHM.HOLO_NAME)
 
         self.textBrowser_info_show.append('Background and FFT Filter Creating... ')
         DHM.filter_background_process()
@@ -103,7 +103,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         path = askdirectory()
         if not os.path.exists(path):
             os.makedirs(path)
-        DHM.image_save(path_to_save=path, name='1')
+        DHM.image_save(path_to_save=path, name=DHM.HOLO_NAME)
 
     def what_to_show(self):
         img_show = DHM.set_img_show(self.comboBox_imgshow.currentText())
@@ -241,6 +241,7 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.checkBox_ROI_set.stateChanged.connect(self.roi_set)
         self.pushButton_read_add.clicked.connect(self.add_read)
         self.pushButton_save_add.clicked.connect(self.add_save)
+        self.lineEdit_holo_name.textChanged.connect(self.holo_name)
 
         self.label_save_add.setHidden(True)
         self.lineEdit_save_add.hide()
@@ -296,6 +297,10 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.lineEdit_save_add.setText(self.save_path + '/')
         DHM.set_save_path(save_path=str(self.lineEdit_save_add.text()))
         self.verticalWidget_back.show()
+
+    def holo_name(self):
+        DHM.HOLO_NAME = self.lineEdit_holo_name.text()
+
 
     def background_method(self):
         if self.comboBox_background_method.currentText() == "Local":

@@ -35,6 +35,7 @@ import math
 
 class HoloGram:
     SHAR = []
+    HOLO_NAME = '1'
     HOLOGRAM = np.ndarray(shape=(3000, 4000), dtype=np.uint16)
     BACKGROUND = np.ndarray(shape=(3000, 4000), dtype=np.uint16)
 
@@ -212,13 +213,13 @@ class HoloGram:
     def image_save(self, path_to_save, name):
 
         if self.height_map_main:
-            tf.imwrite(str(path_to_save + '/' + name + 'height.tiff'), self.HEIGHT_MAP)
+            tf.imwrite(str(path_to_save + '/' + name + '_height.tiff'), self.HEIGHT_MAP)
         if self.phase_map_main:
-            tf.imwrite(str(path_to_save + '/' + name + 'phase.tiff'), self.PHASE_MAP)
+            tf.imwrite(str(path_to_save + '/' + name + '_phase.tiff'), self.PHASE_MAP)
         if self.wrapped_phase_main:
-            tf.imwrite(str(path_to_save + '/' + name + 'wrapped_phase.tiff'), self.WRAPPED_PHASE)
+            tf.imwrite(str(path_to_save + '/' + name + '_wrapped_phase.tiff'), self.WRAPPED_PHASE)
         if self.refocused_volume_main:
-            tf.imwrite(str(path_to_save + '/' + name + 'refocused_volume.tiff'), self.REFOCUSED_VOLUME)
+            tf.imwrite(str(path_to_save + '/' + name + '_refocused_volume.tiff'), self.REFOCUSED_VOLUME)
 
     def get_sys_param(self) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[int], Optional[float]]:
         print("## System Parameters ##",
@@ -300,21 +301,21 @@ class HoloGram:
             print(f"ROI set to: (left, right, top, bottom)= ({self.left}, {self.right}, {self.top}, {self.bot})")
         return self.left, self.right, self.top, self.bot
 
-    def save_results(self, path_to_save, num):
+    def save_results(self, num):
         if self.save_path_main == '':
             print("Set your save_path first")
             return
         if self.height_map_main is True:
-            tf.imwrite(f"{self.save_path_main}/{path_to_save}/result_HEIGHT_MAP_{str(num)}.tiff", self.HEIGHT_MAP)
+            tf.imwrite(f"{self.save_path_main}/result_HEIGHT_MAP_{str(num)}.tiff", self.HEIGHT_MAP)
             print(f"Saving height map at {self.save_path_main}...")
         if self.phase_map_main is True:
-            tf.imwrite(f"{self.save_path_main}/{path_to_save}/result_PHASE_MAP_{str(num)}.tiff", self.PHASE_MAP)
+            tf.imwrite(f"{self.save_path_main}/result_PHASE_MAP_{str(num)}.tiff", self.PHASE_MAP)
             print(f"Saving phase map at {self.save_path_main}...")
         if self.wrapped_phase_main is True:
-            tf.imwrite(f"{self.save_path_main}/{path_to_save}/result_WRAPPED_PHASE_{str(num)}.tiff", self.WRAPPED_PHASE)
+            tf.imwrite(f"{self.save_path_main}/result_WRAPPED_PHASE_{str(num)}.tiff", self.WRAPPED_PHASE)
             print(f"Saving wrapped phase at {self.save_path_main}...")
         if self.refocused_volume_main is True:
-            tf.imwrite(f"{self.save_path_main}/{path_to_save}/result_REFOCUSED_VOLUME_{str(num)}.tiff", self.REFOCUSED_VOLUME)
+            tf.imwrite(f"{self.save_path_main}/result_REFOCUSED_VOLUME_{str(num)}.tiff", self.REFOCUSED_VOLUME)
             print(f"Saving refocused volume at {self.save_path_main}...")
 
     def filter_background_process(self):
@@ -343,10 +344,10 @@ class HoloGram:
         self.HEIGHT_MAP = self.PHASE_MAP / self.height_factor
         self.HEIGHT_MAP = self.background_unit(self.HEIGHT_MAP)
         if self.auto_save:
-            save_path = self.save_path_main + '/result'
+            save_path = self.save_path_main
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
-            self.image_save(path_to_save=save_path, name='1')
+            self.image_save(path_to_save=save_path, name=self.HOLO_NAME)
 
     # ================================= interactive =================================================#
     def filter_fixed_point(self, hologram_raw, quadrant: str = '1', filter_rate: float = 1.2,
