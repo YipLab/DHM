@@ -411,102 +411,17 @@ QComboBox QListView
 }
 
 
-/*-----QSpinBox-----*/
-QSpinBox 
-{
-    background-color: #fdfdfd;
-    border: 1px solid gray;
-	min-height: 12px;
-	color : black;S
-	padding: 2px;
-
-}
-
-
-QSpinBox:hover 
-{
-	background-color: rgb(190, 190, 190);
-
-}
-
-
-QSpinBox::up-button 
-{
-	background-color: qlineargradient(spread:repeat, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(67, 79, 91, 255),stop:1 rgba(32, 44, 56, 255));
-    width: 16px; 
-    border-width: 1px;
-
-}
-
-
-QSpinBox::up-button:hover 
-{
-	background-color: #585858;
-
-}
-
-
-QSpinBox::up-button:pressed 
-{
-	background-color: #252525;
-    width: 16px; 
-    border-width: 1px;
-
-}
-
-
-QSpinBox::up-arrow 
-{
-    image: url(://arrow-up.png);
-    width: 7px;
-    height: 7px;
-
-}
-
-
-QSpinBox::down-button 
-{
-	background-color: qlineargradient(spread:repeat, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(67, 79, 91, 255),stop:1 rgba(32, 44, 56, 255));
-    width: 16px; 
-    border-width: 1px;
-
-}
-
-
-QSpinBox::down-button:hover 
-{
-	background-color: #585858;
-
-}
-
-QSpinBox::down-button:pressed 
-{
-	background-color: #252525;
-    width: 16px; 
-    border-width: 1px;
-
-}
-
-
-QSpinBox::down-arrow 
-{
-    image: url(://arrow-down.png);
-    width: 7px;
-    height: 7px;
-
-}
-
 
 /*-----QCheckBox-----*/
 QCheckBox
 {
 	background-color: transparent;
 	color: #fff;
-	border: none;
+	border: transparent;
 
 }
 
-
+/*
 QCheckBox::indicator
 {
     color: #b1b1b1;
@@ -520,12 +435,12 @@ QCheckBox::indicator
 
 QCheckBox::indicator:checked
 {
-    image:url("./ressources/check.png");
+    image:url("~/Documents/01_projects/DHM/GUI Building/GUI/ui_files/icons/check.png");
     background-color: white;
     border: 5px solid #3a546e;
 
 }
-
+*/
 
 QCheckBox::indicator:unchecked:hover
 {
