@@ -146,7 +146,7 @@ font: 87 10pt &quot;Arial Black&quot;;
 </string>
     </property>
     <property name="text">
-     <string>3D tracking
+     <string>3D Tracking
 In-line TDHM</string>
     </property>
    </widget>
@@ -189,7 +189,7 @@ TDHM</string>
 </string>
     </property>
     <property name="text">
-     <string>Comming</string>
+     <string>...to be updated</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -268,7 +268,7 @@ TDHM</string>
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFilt">
@@ -286,8 +286,6 @@ TDHM</string>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="icons/icon.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
