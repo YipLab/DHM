@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 from PyQt5 import QtWidgets, uic
+from qrangeslider import QRangeSlider
 import sys
 from tkinter.filedialog import askdirectory, askopenfilename
 import dhm.core
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.widgets import RectangleSelector
 import matplotlib.pyplot as plt
 import numpy as np
 import time
@@ -31,8 +33,15 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.img_canvas.minimumWidth = 800
         self.img_canvas.minimumHeight = 600
 
+        # self.rangeSlider1 = QRangeSlider()
+
+        # self.rangeSlider1.setRange(0, 100)
+        # self.rangeSlider1.setBackgroundStyle('background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #222, stop:1 #333);')
+        # self.rangeSlider1.setSpanStyle('background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #282, stop:1 #393);')
+
         self.Bar_layout.addWidget(NavigationToolbar(self.img_canvas, self))
         self.figure_layout.addWidget(self.img_canvas)
+        # self.rangeSlider_layout.addWidget(self.rangeSlider1)
 
         self.hologram = None
         self.background = None
@@ -47,6 +56,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.pushButton_ImgSave.hide()
         self.comboBox_imgshow.hide()
         self.label_imgshow.setHidden(True)
+        # self.rangeSlider1.show()
 
         # Ui Loading ###################
         self.SysCalibration = SysCalib()
@@ -58,7 +68,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.pushButton_background.clicked.connect(self.background_set)
 
         # Push Button Connection #############
-        self.radioButton_liveimg.toggled.connect(self.live_image_check)
+        # self.radioButton_liveimg.toggled.connect(self.live_image_check)
         self.pushButton_refresh.clicked.connect(self.parameter_setting_check)
         self.pushButton_ImgSave.clicked.connect(self.img_save)
         self.comboBox_imgshow.currentIndexChanged.connect(self.what_to_show)
@@ -67,6 +77,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.pushButton_start.clicked.connect(self.start)
 
         self.image_figure = self.img_canvas.figure.subplots()
+        self.image_figure_ax = self.img_canvas.figure.gca()
 
     def start(self):
         self.pushButton_start.setStyleSheet("font: 20pt 'Arial Black';")
@@ -87,12 +98,13 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.image_show(DHM.HEIGHT_MAP)
         # self.image_show(DHM.PHASE_MAP)
         # self.image_show(DHM.WRAPPED_PHASE)
-        # DHM.save_results(self.num)
-        # self.Note.addText("Done Saving!")
 
         self.pushButton_ImgSave.show()
         self.comboBox_imgshow.show()
         self.label_imgshow.setHidden(False)
+
+        # DHM.save_results(self.num)
+        # self.Note.addText("Current image saved.")
 
     def image_show(self, img_name):
         self.image_figure.imshow(img_name, cmap='gist_gray')
@@ -231,6 +243,7 @@ class BackgroundSet(QtWidgets.QMainWindow):
 
         self.Layout_frame.addWidget(self.img_canvas_back)
         self.image_figure_back = self.img_canvas_back.figure.subplots()
+        self.image_figure_ax = self.img_canvas_back.figure.gca()
 
         self.background_method()
         self.comboBox_background_method.currentTextChanged.connect(self.background_method)
@@ -239,18 +252,54 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.pushButton_confirm.clicked.connect(self.back_confirm)
         self.pushButton_cancel.clicked.connect(self.back_cancel)
         self.checkBox_ROI_set.stateChanged.connect(self.roi_set)
+#=========Do Sth here========#
+
         self.pushButton_read_add.clicked.connect(self.add_read)
         self.pushButton_save_add.clicked.connect(self.add_save)
+
         self.lineEdit_holo_name.textChanged.connect(self.holo_name)
 
-        self.label_save_add.setHidden(True)
-        self.lineEdit_save_add.hide()
-        self.pushButton_save_add.hide()
-        self.verticalWidget_back.hide()
+        # self.label_save_add.setHidden(True)
+        # self.lineEdit_save_add.hide()
+        # self.pushButton_save_add.hide()
+
+
+        # self.verticalWidget_back.hide()
 
     def roi_set(self):
+
+        def roi_set_line_select_callback(eclick, erelease):
+            'eclick and erelease are the press and release events'
+            x1, y1 = eclick.xdata, eclick.ydata
+            x2, y2 = erelease.xdata, erelease.ydata
+            print("(%3.2f, %3.2f) --> (%3.2f, %3.2f)" % (x1, y1, x2, y2))
+            # print(" The button you used were: %s %s" % (eclick.button, erelease.button))
+
+        def roi_set_toggle_selector(event):
+            print("Selector Launched.")
+            # print(' Key pressed.')
+            # if event.key in ['Q', 'q'] and toggle_selector.RS.active:
+            #     print(' RectangleSelector deactivated.')
+            #     toggle_selector.RS.set_active(False)
+            # if event.key in ['A', 'a'] and not toggle_selector.RS.active:
+            #     print(' RectangleSelector activated.')
+            #     toggle_selector.RS.set_active(True)
+
         self.image_figure_back.imshow(DHM.HOLOGRAM, cmap='gist_gray')
         self.img_canvas_back.draw()
+        print("\n      click  -->  release")
+
+        # drawtype is 'box' or 'line' or 'none'
+        roi_set_toggle_selector.RS = RectangleSelector(self.image_figure_ax, roi_set_line_select_callback,
+                                               drawtype='box', useblit=True,
+                                               button=[1, 3],  # don't use middle button
+                                               minspanx=5, minspany=5,
+                                               spancoords='pixels',
+                                               interactive=True)
+        plt.connect('key_press_event', roi_set_toggle_selector)
+        # plt.show()
+        self.img_canvas_back.draw_idle()
+
         if self.checkBox_ROI_set.isChecked():
             self.ROI_set.show()
         else:
@@ -268,7 +317,8 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.lineEdit_cam_save.setText(self.background_save_address + '/')
 
     def background_read(self):
-        self.background_read_address = askopenfilename()
+        # self.background_read_address = askopenfilename()
+        self.background_read_address = "../../Example Images/ref.tiff"
         DHM.set_background_img(read_path_back=self.background_read_address)
         self.lineEdit_local_read.setText(self.background_read_address)
         self.Note.setText(self.background_read_address)
@@ -278,8 +328,10 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.img_canvas_back.draw()
 
     def add_read(self):
-        self.read_path = askdirectory()
-        self.lineEdit_read_add.setText(self.read_path + '/')
+        # self.read_path = askdirectory()
+        # self.lineEdit_read_add.setText(self.read_path + '/')
+        self.read_path = "../../Example Images/"
+        self.lineEdit_read_add.setText(self.read_path)
         DHM.set_read_path(read_path=self.lineEdit_read_add.text())
         DHM.add_hologram_img('1')
         if DHM.auto_save:
@@ -293,8 +345,8 @@ class BackgroundSet(QtWidgets.QMainWindow):
             self.verticalWidget_back.show()
 
     def add_save(self):
-        self.save_path = askdirectory()
-        self.lineEdit_save_add.setText(self.save_path + '/')
+        self.save_path = "../../Example Images/"
+        self.lineEdit_save_add.setText(self.save_path)
         DHM.set_save_path(save_path=str(self.lineEdit_save_add.text()))
         self.verticalWidget_back.show()
 

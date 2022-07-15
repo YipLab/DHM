@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Parameter Setting</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -163,9 +163,6 @@
       </property>
       <property name="singleStep">
        <double>1.000000000000000</double>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::DefaultStepType</enum>
       </property>
       <property name="value">
        <double>640.000000000000000</double>
