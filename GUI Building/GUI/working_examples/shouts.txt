@@ -1,0 +1,11 @@
+Folder Selected contains 100 images. 
+You are viewing image 3/100. Set Start and End point for the processing range or modify your ROI Setting.
+You are viewing image 4/100. Set Start and End point for the processing range or modify your ROI Setting.
+ROI Selection Enabled
+New ROI added
+New ROI at 1000,1000, 2000,2000
+ROI modified to 1000,1000, 2000,2000 
+ROI Saved at 1000,1000, 2000,2000
+Range Selected: single image
+Range Selected: multiple images
+
