@@ -35,7 +35,7 @@ import math
 
 class HoloGram:
     SHAR = []
-    HOLO_NAME = '1'
+    HOLO_LIST = []
     HOLOGRAM = np.ndarray(shape=(3000, 4000), dtype=np.uint16)
     BACKGROUND = np.ndarray(shape=(3000, 4000), dtype=np.uint16)
 
@@ -135,14 +135,14 @@ class HoloGram:
             print("Please type in a correct address!")
 
     def add_hologram_img(self, holo_file_name):
-        if os.path.isfile(self.read_path_main + holo_file_name + '.tiff'):
-            self.HOLOGRAM = np.array(plt.imread(self.read_path_main + holo_file_name + '.tiff')[:, :], dtype=float)
+        if os.path.isfile(self.read_path_main +"/"+ holo_file_name):
+            self.HOLOGRAM = np.array(plt.imread(self.read_path_main +"/"+ holo_file_name)[:, :], dtype=float)
             self.shape_x_main = self.HOLOGRAM.shape[0]
             self.shape_y_main = self.HOLOGRAM.shape[1]
             print(f"Hologram is set, resolution is ({self.shape_x_main},{self.shape_y_main})")
         else:
             # How to show this in the GUI ???? ###############################################
-            print(str(self.read_path_main + holo_file_name + '.tiff'))
+            print(str(self.read_path_main +"/"+ holo_file_name))
             print("Please type in a correct address for hologram!")
 
     def set_read_path(self, read_path: str):
@@ -330,7 +330,7 @@ class HoloGram:
         else:
             print("Will do the ROI")
 
-    def hologram_process(self):
+    def hologram_process(self, holo_name : str):
         reconstructed_map = None
         hologram = self.fourier_process(self.HOLOGRAM, self.Fourier_Filter)
         hologram = hologram * self.Processed_Background
@@ -347,7 +347,7 @@ class HoloGram:
             save_path = self.save_path_main
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
-            self.image_save(path_to_save=save_path, name=self.HOLO_NAME)
+            self.image_save(path_to_save=save_path, name=self.HOLO_LIST[holo_name])
 
     # ================================= interactive =================================================#
     def filter_fixed_point(self, hologram_raw, quadrant: str = '1', filter_rate: float = 1.2,

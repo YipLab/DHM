@@ -11,33 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Image and ROI Setting</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>20</y>
-      <width>411</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial Black</family>
-      <pointsize>20</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Image Load &amp; ROI Setting</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
@@ -55,7 +31,7 @@
       <layout class="QVBoxLayout" name="Layout_frame"/>
      </item>
      <item>
-      <widget class="QTextBrowser" name="Note">
+      <widget class="QTextBrowser" name="background_console_out">
        <property name="maximumSize">
         <size>
          <width>16777215</width>
@@ -80,7 +56,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>130</y>
       <width>441</width>
       <height>228</height>
      </rect>
@@ -250,8 +226,8 @@ p, li { white-space: pre-wrap; }
         <widget class="QPushButton" name="pushButton_cam_save_back">
          <property name="font">
           <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
+           <family>DejaVu Sans</family>
+           <pointsize>9</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -265,8 +241,8 @@ p, li { white-space: pre-wrap; }
         <widget class="QPushButton" name="pushButton_cam_open">
          <property name="font">
           <font>
-           <family>Arial Black</family>
-           <pointsize>12</pointsize>
+           <family>DejaVu Sans</family>
+           <pointsize>9</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -395,7 +371,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>440</y>
+      <y>360</y>
       <width>111</width>
       <height>17</height>
      </rect>
@@ -427,36 +403,18 @@ p, li { white-space: pre-wrap; }
    <widget class="QWidget" name="ROI_set" native="true">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>460</y>
+      <x>20</x>
+      <y>380</y>
       <width>451</width>
-      <height>161</height>
+      <height>131</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>ROI Setting</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="0">
           <widget class="QLabel" name="label_7">
            <property name="font">
             <font>
@@ -474,11 +432,55 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="pushButton_discard_last_roi">
+           <property name="text">
+            <string>Discard Last ROI</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_add_new_roi">
+           <property name="text">
+            <string>Add New ROI</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Black</family>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Saved ROI</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
           <widget class="QComboBox" name="comboBox_2">
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>100</width>
              <height>0</height>
             </size>
            </property>
@@ -502,42 +504,8 @@ p, li { white-space: pre-wrap; }
            </item>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_9">
-         <property name="minimumSize">
-          <size>
-           <width>50</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial Black</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Current ROI</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="2" column="3">
-          <widget class="QLineEdit" name="lineEdit_4"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="label_12">
+         <item row="3" column="1" colspan="2">
+          <widget class="QLabel" name="label_current_roi">
            <property name="font">
             <font>
              <family>Arial Black</family>
@@ -546,68 +514,11 @@ p, li { white-space: pre-wrap; }
              <bold>true</bold>
             </font>
            </property>
-           <property name="text">
-            <string>Right</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="lineEdit_2"/>
-         </item>
-         <item row="1" column="3">
-          <widget class="QLineEdit" name="lineEdit_3"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="font">
-            <font>
-             <family>Arial Black</family>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
            </property>
            <property name="text">
-            <string>Top</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_11">
-           <property name="font">
-            <font>
-             <family>Arial Black</family>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Left</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="font">
-            <font>
-             <family>Arial Black</family>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Bottom</string>
+            <string/>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -624,12 +535,12 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>90</y>
+      <y>10</y>
       <width>441</width>
-      <height>116</height>
+      <height>118</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_5">
+    <layout class="QVBoxLayout" name="verticalLayout_image_load">
      <item>
       <widget class="QLabel" name="label_2">
        <property name="font">
@@ -839,6 +750,19 @@ font: 87 10pt &quot;Arial Black&quot;;
      <string>Cancel</string>
     </property>
    </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>510</y>
+      <width>431</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -846,7 +770,7 @@ font: 87 10pt &quot;Arial Black&quot;;
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

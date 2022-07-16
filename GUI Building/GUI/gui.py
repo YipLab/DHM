@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 from PyQt5 import QtWidgets, uic
-from qrangeslider import QRangeSlider
+import multiprocessing as mp
+import easygui as esg
+# from qrangeslider import QRangeSlider
 import sys
-from tkinter.filedialog import askdirectory, askopenfilename
+# from tkinter.filedialog import askdirectory, askopenfilename
 import dhm.core
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.widgets import RectangleSelector
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import numpy as np
 import time
 import os
@@ -36,8 +39,8 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         # self.rangeSlider1 = QRangeSlider()
 
         # self.rangeSlider1.setRange(0, 100)
-        # self.rangeSlider1.setBackgroundStyle('background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #222, stop:1 #333);')
-        # self.rangeSlider1.setSpanStyle('background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #282, stop:1 #393);')
+        # self.rangeSlider1.setBackgroundStyle('background: qlineargradient(x0:0, y0:0, x1:0, y1:1, stop:0 #222, stop:1 #333);')
+        # self.rangeSlider1.setSpanStyle('background: qlineargradient(x0:0, y0:0, x1:0, y1:1, stop:0 #282, stop:1 #393);')
 
         self.Bar_layout.addWidget(NavigationToolbar(self.img_canvas, self))
         self.figure_layout.addWidget(self.img_canvas)
@@ -92,7 +95,8 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
 
         self.textBrowser_info_show.append('Hologram Processing... ')
 
-        DHM.hologram_process()
+        #TODO: send hologram list name 
+        DHM.hologram_process("")
 
         # save
         self.image_show(DHM.HEIGHT_MAP)
@@ -104,7 +108,7 @@ class TDHMWidgetStd(QtWidgets.QMainWindow):
         self.label_imgshow.setHidden(False)
 
         # DHM.save_results(self.num)
-        # self.Note.addText("Current image saved.")
+        # self.background_console_out.addText("Current image saved.")
 
     def image_show(self, img_name):
         self.image_figure.imshow(img_name, cmap='gist_gray')
@@ -229,6 +233,8 @@ class BackgroundSet(QtWidgets.QMainWindow):
         super(BackgroundSet, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/background_set_dialog.ui', self)  # Load the .ui file
 
+        self.ROI_LIST = []
+        self.roi_current = [0,0,0,0]
         self.ROI_set.hide()
 
         self.save_path = None
@@ -254,15 +260,16 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.checkBox_ROI_set.stateChanged.connect(self.roi_set)
 #=========Do Sth here========#
 
-        self.pushButton_read_add.clicked.connect(self.add_read)
+        self.pushButton_read_add.clicked.connect(self.add_holo_read)
         self.pushButton_save_add.clicked.connect(self.add_save)
 
         self.lineEdit_holo_name.textChanged.connect(self.holo_name)
-
         # self.label_save_add.setHidden(True)
         # self.lineEdit_save_add.hide()
         # self.pushButton_save_add.hide()
 
+        self.pushButton_add_new_roi.clicked.connect(self.roi_set_add_new)
+        self.pushButton_discard_last_roi.clicked.connect(self.roi_set_discard_last)
 
         # self.verticalWidget_back.hide()
 
@@ -270,40 +277,45 @@ class BackgroundSet(QtWidgets.QMainWindow):
 
         def roi_set_line_select_callback(eclick, erelease):
             'eclick and erelease are the press and release events'
-            x1, y1 = eclick.xdata, eclick.ydata
-            x2, y2 = erelease.xdata, erelease.ydata
-            print("(%3.2f, %3.2f) --> (%3.2f, %3.2f)" % (x1, y1, x2, y2))
-            # print(" The button you used were: %s %s" % (eclick.button, erelease.button))
-
+            x0, y0 = int(eclick.xdata), int(eclick.ydata)
+            x1, y1 = int(erelease.xdata), int(erelease.ydata)
+            self.background_console_out.setText(f"ROI at [{x0},{y0},{x1},{y1}], Press 'Add New ROI' button to save it.")
+            self.roi_current = [x0, y0, x1, y1]
+            
         def roi_set_toggle_selector(event):
             print("Selector Launched.")
-            # print(' Key pressed.')
-            # if event.key in ['Q', 'q'] and toggle_selector.RS.active:
-            #     print(' RectangleSelector deactivated.')
-            #     toggle_selector.RS.set_active(False)
-            # if event.key in ['A', 'a'] and not toggle_selector.RS.active:
-            #     print(' RectangleSelector activated.')
-            #     toggle_selector.RS.set_active(True)
+
 
         self.image_figure_back.imshow(DHM.HOLOGRAM, cmap='gist_gray')
         self.img_canvas_back.draw()
-        print("\n      click  -->  release")
-
-        # drawtype is 'box' or 'line' or 'none'
         roi_set_toggle_selector.RS = RectangleSelector(self.image_figure_ax, roi_set_line_select_callback,
-                                               drawtype='box', useblit=True,
+                                               useblit=True,
                                                button=[1, 3],  # don't use middle button
                                                minspanx=5, minspany=5,
                                                spancoords='pixels',
                                                interactive=True)
         plt.connect('key_press_event', roi_set_toggle_selector)
-        # plt.show()
         self.img_canvas_back.draw_idle()
 
         if self.checkBox_ROI_set.isChecked():
             self.ROI_set.show()
         else:
             self.ROI_set.hide()
+
+    def roi_set_add_new(self):
+        self.ROI_LIST.append(self.roi_current)
+        roip = ''
+        for idx, roi in enumerate(self.ROI_LIST):
+            roip += f"ROI {idx+1}: {roi}\n"
+        self.label_current_roi.setText(roip)
+        x0 = self.roi_current[0]; y0 = self.roi_current[1]; x1 = self.roi_current[2]; y1 = self.roi_current[3]
+        self.image_figure_ax.add_patch(patches.Rectangle((float(x0), float(y0)),
+                        float(x1-x0), float(y1-y0), fc ='none', ec ='g', lw = 2))
+        self.img_canvas_back.draw_idle()
+
+    def roi_set_discard_last(self):
+        self.ROI_LIST.pop()
+        self.img_canvas_back.draw_idle()   
 
     def back_confirm(self):
         DHM.set_roi_para(roi_enable=self.checkBox_ROI_set.isChecked())
@@ -313,27 +325,36 @@ class BackgroundSet(QtWidgets.QMainWindow):
         self.close()
 
     def background_save(self):
-        self.background_save_address = askdirectory()
+        self.background_save_address = esg.diropenbox(msg=None, title="Select the directory to hologram(s)", \
+                                                default="../../Example Images/")
         self.lineEdit_cam_save.setText(self.background_save_address + '/')
 
     def background_read(self):
         # self.background_read_address = askopenfilename()
-        self.background_read_address = "../../Example Images/ref.tiff"
-        DHM.set_background_img(read_path_back=self.background_read_address)
+        self.background_read_address = esg.fileopenbox(msg=None, title="Select the background image", \
+                            default="../../Example Images/reference_background.tiff", filetypes="*.tiff", multiple=False)
+        DHM.set_background_img(read_path_back = self.background_read_address)
         self.lineEdit_local_read.setText(self.background_read_address)
-        self.Note.setText(self.background_read_address)
-        self.Note.append(f"Background is set, resolution is ({DHM.shape_x_main},{DHM.shape_y_main})")
+        self.background_console_out.setText(self.background_read_address)
+        self.background_console_out.append(f"Background is set, resolution is ({DHM.shape_x_main},{DHM.shape_y_main})")
 
         self.image_figure_back.imshow(DHM.BACKGROUND, cmap='gist_gray')
         self.img_canvas_back.draw()
 
-    def add_read(self):
+    def add_holo_read(self):
         # self.read_path = askdirectory()
         # self.lineEdit_read_add.setText(self.read_path + '/')
-        self.read_path = "../../Example Images/"
+        self.read_path = esg.diropenbox(msg=None, title="Select the directory to hologram(s)", \
+                                                default="../../Example Images/")
+        self.file_list = []
+        for (dirpath, dirnames, filenames) in os.walk(self.read_path):
+            self.file_list.extend(filenames)
+            break
+        print(self.file_list)
+        # self.read_path = "../../Example Images/"
         self.lineEdit_read_add.setText(self.read_path)
         DHM.set_read_path(read_path=self.lineEdit_read_add.text())
-        DHM.add_hologram_img('1')
+        DHM.add_hologram_img(self.file_list[1])
         if DHM.auto_save:
             self.lineEdit_save_add.show()
             self.pushButton_save_add.show()
@@ -345,13 +366,14 @@ class BackgroundSet(QtWidgets.QMainWindow):
             self.verticalWidget_back.show()
 
     def add_save(self):
-        self.save_path = "../../Example Images/"
+        self.save_path = esg.diropenbox(msg=None, title="Select the directory to hologram(s)", \
+                                                default="../../Example Images/")
         self.lineEdit_save_add.setText(self.save_path)
         DHM.set_save_path(save_path=str(self.lineEdit_save_add.text()))
         self.verticalWidget_back.show()
 
     def holo_name(self):
-        DHM.HOLO_NAME = self.lineEdit_holo_name.text()
+        DHM.HOLO_LIST[0] = self.lineEdit_holo_name.text()
 
 
     def background_method(self):
