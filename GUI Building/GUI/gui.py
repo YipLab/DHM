@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import QMutex, QObject, QThread, pyqtSignal
+
 import multiprocessing as mp
 import easygui as esg
 # from qrangeslider import QRangeSlider
 import sys
-# from tkinter.filedialog import askdirectory, askopenfilename
 import dhm.core
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -15,19 +16,31 @@ import numpy as np
 import time
 import os
 
+q_mutex = QMutex()
+
+class UiManager:
+    def __init__(self):
+        self.launcher = Launcher()
+        self.standardTDHM = TDHMWidgetStd()
+        self.launcher.launcher_hide.connect(self.standardTDHM.show)
+        # self.standardTDHM.launcher_show.connect(self.launcher.show)
+        self.launcher.show()
 
 class Launcher(QtWidgets.QMainWindow):
+    launcher_hide = pyqtSignal()
     def __init__(self):
         super(Launcher, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/launcher_window.ui', self)  # Load the .ui file
 
-        self.standardTDHM = TDHMWidgetStd()
-
-        self.standard_TDHM.clicked.connect(self.standardTDHM.show)
-
+        self.standard_TDHM.clicked.connect(self.hide)
+        self.standard_TDHM.clicked.connect(self.launcher_hide)
 
 class TDHMWidgetStd(QtWidgets.QMainWindow):
-    def __init__(self):
+
+    # launcher_show = QtCore.pyqtSignal()
+    # self.xxx.clicked.connect(self.launcher_show)
+
+    def __init__(self, parent = None):
         super(TDHMWidgetStd, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('./ui_files/std_main.ui', self)  # Load the .ui file
 
@@ -273,13 +286,14 @@ class BackgroundSet(QtWidgets.QMainWindow):
 
         # self.verticalWidget_back.hide()
 
+
     def roi_set(self):
 
         def roi_set_line_select_callback(eclick, erelease):
             'eclick and erelease are the press and release events'
             x0, y0 = int(eclick.xdata), int(eclick.ydata)
             x1, y1 = int(erelease.xdata), int(erelease.ydata)
-            self.background_console_out.setText(f"ROI at [{x0},{y0},{x1},{y1}], Press 'Add New ROI' button to save it.")
+            self.background_console_out.append(f"ROI at [{x0},{y0},{x1},{y1}], Press 'Save New ROI' button to save it.")
             self.roi_current = [x0, y0, x1, y1]
             
         def roi_set_toggle_selector(event):
@@ -482,8 +496,6 @@ class ParamSet(QtWidgets.QDialog):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)  # Create an instance of QtWidgets.QApplication
-    # apply_stylesheet(app, theme='dark_teal.xml')
-    # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     File = open('./ui_files/styles/Yip_lab.qss', 'r')
     with File:
@@ -491,8 +503,6 @@ if __name__ == '__main__':
         app.setStyleSheet(qss_style)
 
     DHM = dhm.core.HoloGram()
-
-    launcher = Launcher()  # Create an instance of our class
-    launcher.show()
+    ui_manager = UiManager()
 
     sys.exit(app.exec())
