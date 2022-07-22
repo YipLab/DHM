@@ -55,7 +55,8 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>13</pointsize>
+          <family>Helvetica</family>
+          <pointsize>20</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -94,7 +95,7 @@
            <x>0</x>
            <y>0</y>
            <width>398</width>
-           <height>618</height>
+           <height>609</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="vbox_scr">
@@ -152,12 +153,21 @@
          <number>9</number>
         </property>
         <item row="2" column="2">
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="pushButton_view_img">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>120</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="statusTip">
+           <string>Click to load and view the specified image in the series.</string>
           </property>
           <property name="text">
            <string>View Image</string>
@@ -165,10 +175,16 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QSpinBox" name="spinBox">
+         <widget class="QSpinBox" name="spinBox_select_img">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>90</width>
+            <width>120</width>
             <height>16777215</height>
            </size>
           </property>
@@ -193,7 +209,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="Progress" stretch="0,0,2,0,0">
+       <layout class="QHBoxLayout" name="info_progress_Layout" stretch="0,0,2,0,0">
         <property name="spacing">
          <number>6</number>
         </property>
@@ -243,14 +259,38 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="start_pause">
+         <widget class="QPushButton" name="pushButton_start_pause">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Pause</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="end_task">
+         <widget class="QPushButton" name="pushButton_end_task">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>End Task</string>
           </property>
@@ -283,11 +323,18 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_DHM_Launcher"/>
+   </widget>
+   <widget class="QMenu" name="menuDHM_Type">
+    <property name="title">
+     <string>DHM Type</string>
     </property>
    </widget>
    <addaction name="menuView"/>
    <addaction name="menuImage_Type"/>
+   <addaction name="menuDHM_Type"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLocal_Imaging">
@@ -298,6 +345,11 @@
   <action name="actionLive_Imaging">
    <property name="text">
     <string>Live Imaging</string>
+   </property>
+  </action>
+  <action name="actionOpen_DHM_Launcher">
+   <property name="text">
+    <string>Load Program Receipt</string>
    </property>
   </action>
  </widget>

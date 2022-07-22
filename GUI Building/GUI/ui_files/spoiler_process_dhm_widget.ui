@@ -35,7 +35,7 @@
       </font>
      </property>
      <property name="text">
-      <string>STEP1: Set Parameter</string>
+      <string>STEP5: Process DHM Images</string>
      </property>
     </widget>
    </item>
@@ -568,57 +568,143 @@
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <widget class="QPushButton" name="pushButton_Confirm">
-       <property name="geometry">
-        <rect>
-         <x>6</x>
-         <y>344</y>
-         <width>138</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>400</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Arial Black</family>
-         <pointsize>10</pointsize>
-         <weight>10</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(255, 255, 255);
+      <layout class="QVBoxLayout" name="contentLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_Confirm">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial Black</family>
+           <pointsize>10</pointsize>
+           <weight>10</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);
 font: 87 10pt &quot;Arial Black&quot;;
 background-color: rgb(255, 0, 0);</string>
-       </property>
-       <property name="text">
-        <string>Confirm and Go to Next</string>
-       </property>
-      </widget>
+         </property>
+         <property name="text">
+          <string>Start Processing DHM</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,2,5">
+         <item>
+          <widget class="QLabel" name="label_imgshow">
+           <property name="font">
+            <font>
+             <family>Arial Black</family>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Image Show:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_imgshow">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial Black</family>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>Height map</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>FFT Filter</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Phase map</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wrapped Phase</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Hologram</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Reference</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_ImgSave">
+           <property name="maximumSize">
+            <size>
+             <width>160</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 87 10pt &quot;Arial Black&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Save Image</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>Jump to 3D plot</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
