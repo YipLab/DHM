@@ -6,9 +6,27 @@ from PyQt5.QtCore import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
+import sys
 
+class UiManager:
+    def __init__(self):
+        self.launcher = Launcher()
+        self.standardTDHM = TDHMWidgetStd()
+        self.launcher.launcher_hide.connect(self.standardTDHM.show)
+        # self.standardTDHM.launcher_show.connect(self.launcher.show)
+        self.launcher.show()
+
+class Launcher(QMainWindow):
+    launcher_hide = pyqtSignal()
+    def __init__(self):
+        super(Launcher, self).__init__()  # Call the inherited classes __init__ method
+        uic.loadUi('./ui_files/launcher_window.ui', self)  # Load the .ui file
+
+        self.standard_TDHM.clicked.connect(self.hide)
+        self.standard_TDHM.clicked.connect(self.launcher_hide)
 
 class Spoiler(QWidget):
+    spoiler_next_step = pyqtSignal()
     def __init__(self, parent=None, ui_path = '', animationDuration=300):
         super(Spoiler, self).__init__(parent=parent)
         uic.loadUi(ui_path, self)  # Load the .ui file
@@ -44,8 +62,12 @@ class Spoiler(QWidget):
             self.toggleAnimation.start()
 
         self.toggleButton.clicked.connect(start_animation)
-        self.pushButton_Confirm.clicked.connect(start_animation)
+        self.pushButton_Confirm.clicked.connect(self.spoiler_next_step)
+        self.pushButton_Confirm.clicked.connect(self.toggleButton.click)
         self.setContentLayout(self.contentLayout)
+
+    def drop_spoiler(self):
+        self.toggleButton.click()
 
     def setContentLayout(self, contentLayout):
         self.contentArea.destroy()
@@ -58,6 +80,7 @@ class Spoiler(QWidget):
             spoilerAnimation.setDuration(self.animationDuration)
             spoilerAnimation.setStartValue(collapsedHeight)
             spoilerAnimation.setEndValue(collapsedHeight + contentHeight)
+
         contentAnimation = self.toggleAnimation.animationAt(self.toggleAnimation.animationCount() - 1)
         contentAnimation.setDuration(self.animationDuration)
         contentAnimation.setStartValue(0)
@@ -67,20 +90,16 @@ class set_param_Spoiler(Spoiler):
     def __init__(self, parent=None, ui_path = '', animationDuration=300):
         super(set_param_Spoiler, self).__init__(parent=parent, ui_path = ui_path, animationDuration=animationDuration)
 
-class MainWindow(QMainWindow):
+
+class TDHMWidgetStd(QMainWindow):
 
     def __init__(self):
-        super().__init__()
+        super(TDHMWidgetStd, self).__init__()
         uic.loadUi('./ui_files/std_main_alpha.ui', self)  # Load the .ui file
         self.init_ui()
 
     def init_ui(self):
 
-        # self.setGeometry(300, 300, 300, 220)
-
-        # self.scroll = QScrollArea()             # Scroll Area which contains the widgets, set as the centralWidget
-        # self.widget = QWidget()                 # Widget that contains the collection of Vertical Box
-        # self.vbox = QVBoxLayout()
         self.img_canvas = FigureCanvas(plt.Figure())
         self.img_canvas.minimumWidth = 800
         self.img_canvas.minimumHeight = 600
@@ -93,21 +112,20 @@ class MainWindow(QMainWindow):
         self.vbox.addWidget(self.spoiler1)
         self.vbox.addWidget(self.spoiler2)
         self.vbox.addWidget(self.spoiler3)
-
+        self.spoiler1.spoiler_next_step.connect(self.spoiler2.drop_spoiler)
+        self.spoiler2.spoiler_next_step.connect(self.spoiler3.drop_spoiler)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.widget)
-
-        # self.setCentralWidget(self.scroll)
-        self.show()
-
-import sys
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
+    app.setFont(QFont('Helvetica Neue'))
+    app.setStyleSheet("QLabel{font-family: 'Helvetica';}")
     # File = open('./ui_files/styles/Yip_lab.qss', 'r')
     # with File:
     #     qss_style = File.read()
     #     app.setStyleSheet(qss_style)
-    ex = MainWindow()
+
+    ui_manager = UiManager()
     sys.exit(app.exec_())

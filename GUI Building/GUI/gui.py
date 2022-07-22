@@ -6,6 +6,7 @@ import multiprocessing as mp
 import easygui as esg
 # from qrangeslider import QRangeSlider
 import sys
+# from tkinter.filedialog import askdirectory, askopenfilename
 import dhm.core
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
